@@ -132,7 +132,7 @@
                             </div>
                             <!-- Modal -->
                             <div class="modal fade" id="ExemploModalCentralizado" tabindex="-1" role="dialog"
-                                 aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+                                 aria-labelledby="TituloModalCentralizado" >
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -176,14 +176,56 @@
                                                 ${cliente.email}
                                             </td>
                                             <td id="tb-funcoes">
-                                                <i class="ph ph-pencil"></i>
-                                                <i class="ph ph-trash"></i>
+                                                <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
+                                                <a href="${caminhoContexto}/excluir-cliente?id=${cliente.id}"><i class="ph ph-trash"></i></a>
                                             </td>
                                         </tr>
                                     </c:forEach>
 
                                 </tbody>
                             </table>
+                            <c:if test="${modal == 'modalEditarCliente'}">
+                                <script>
+                                    document.getElementById("modalEditarCliente").show();
+                                </script>
+                            </c:if>
+                            <div class="modal fade" id="modalEditarCliente" tabindex="-1" role="dialog"
+                                 aria-labelledby="TituloModalCentralizado" aria-hidden="false">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="TituloModalCentralizado">Editar</h5>
+                                            <button id="btn-close-modal" type="button" data-dismiss="modal"
+                                                    aria-label="Fechar">
+                                                <span id="x-close" aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="">
+                                                <div class="form-group">
+
+                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome">
+
+                                                </div>
+                                                <div class="form-group">
+
+                                                    <input name="telefone" type="text" class="form-control input-text" id="input-telefone" placeholder="Telefone">
+                                                </div>
+                                                <div class="form-group ">
+                                                    <input name="email" type="email" class="form-control input-text" id="input-email" placeholder="Email">
+
+                                                </div>
+                                                <button type="submit" class="btn-cadastro">Editar</button>
+
+
+
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>

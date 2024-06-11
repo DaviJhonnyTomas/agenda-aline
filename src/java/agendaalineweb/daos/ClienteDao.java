@@ -36,15 +36,15 @@ public class ClienteDao {
             estadoPreparado.setString(3, cliente.getEmail());
             estadoPreparado.execute();
             conexao.commit();
-            
+
         } catch (SQLException ex) {
-           JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-              JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
             }
 
         }
@@ -68,16 +68,16 @@ public class ClienteDao {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
         } finally {
-            
+
             try {
                 estadoPreparado.close();
                 conexao.close();
 
             } catch (SQLException ex) {
-               JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
 
             }
-            
+
         }
         return false;
     }
@@ -99,7 +99,7 @@ public class ClienteDao {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-        } 
+        }
         return clientes;
 
     }
@@ -121,7 +121,7 @@ public class ClienteDao {
             conexao.commit();
             JOptionPane.showMessageDialog(null, "Cliente alterado com sucesso");
         } catch (SQLException ex) {
-             JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
         } finally {
             try {
                 estadoPreparado.close();
@@ -148,15 +148,16 @@ public class ClienteDao {
             estadoPreparado.execute();
 
             conexao.commit();
-           JOptionPane.showMessageDialog(null, "Cliente deletado com sucesso");
+
         } catch (SQLException ex) {
-          JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            ex.printStackTrace();
+
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
             }
 
         }
@@ -209,7 +210,7 @@ public class ClienteDao {
             if (retorno.next() == true) {
                 cliente = new Cliente(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"));
                 return cliente;
-                
+
             }
 
         } catch (SQLException ex) {
@@ -230,7 +231,7 @@ public class ClienteDao {
     }
 
     public ArrayList<Cliente> getClientesByIds(int[] idsClientes) throws SQLException {
-         String sql = "Select * from cliente";
+        String sql = "Select * from cliente";
         Conexao conexao = new Conexao();
         Connection conn = conexao.getConnection();
         PreparedStatement estadoPreparado = conn.prepareStatement(sql);
@@ -242,15 +243,14 @@ public class ClienteDao {
             for (int idClienteVetor : idsClientes) {
                 if (idClienteBanco == idClienteVetor) {
                     Cliente cliente = new Cliente(resultado.getString("nome"), resultado.getString("telefone"), resultado.getString("email"));
-                   clientes.add(cliente);
+                    clientes.add(cliente);
                 }
 
             }
-            
+
         }
         return clientes;
 
     }
-    
 
 }
