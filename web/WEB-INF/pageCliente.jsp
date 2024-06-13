@@ -46,6 +46,8 @@
     </head>
 
     <body class="d-flex flex-column">
+
+
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
                 <a class="navbar-brand " href="${caminhoContexto}/listagem-agendamentos-dia">
@@ -184,13 +186,12 @@
 
                                 </tbody>
                             </table>
-                            <c:if test="${modal == 'modalEditarCliente'}">
-                                <script>
-                                    document.getElementById("modalEditarCliente").show();
-                                </script>
-                            </c:if>
+
+
+
+
                             <div class="modal fade" id="modalEditarCliente" tabindex="-1" role="dialog"
-                                 aria-labelledby="TituloModalCentralizado" aria-hidden="false">
+                                 aria-labelledby="TituloModalCentralizado" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -201,7 +202,10 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="">
+                                            <form action="${caminhoContexto}/editar-cliente" method="post">
+                                                <div class="form-group">
+                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${id}" hidden="true">
+                                                </div>
                                                 <div class="form-group">
 
                                                     <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome">
@@ -215,7 +219,7 @@
                                                     <input name="email" type="email" class="form-control input-text" id="input-email" placeholder="Email">
 
                                                 </div>
-                                                <button type="submit" class="btn-cadastro">Editar</button>
+                                                <input type="submit" class="btn-cadastro" value="editar">
 
 
 
@@ -225,6 +229,20 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <%
+                                String modalParam = (String) request.getAttribute("modal");
+                                if ("modalEditarCliente".equals(modalParam)) {
+                            %>
+                            <script>
+
+                                $(document).ready(function () {
+                                    $('#modalEditarCliente').modal('show');
+                                });
+                            </script>
+                            <%
+                                }
+                            %>
 
                         </div>
 

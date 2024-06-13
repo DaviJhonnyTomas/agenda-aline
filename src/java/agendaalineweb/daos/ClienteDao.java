@@ -104,7 +104,7 @@ public class ClienteDao {
 
     }
 
-    public void updateById(int id, Cliente cliente) {//recebe da Model.
+    public void updateById(Cliente cliente) {//recebe da Model.
         String sql = "update cliente set nome = ?, telefone = ?, email = ? where id = ? ";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
@@ -115,7 +115,7 @@ public class ClienteDao {
             estadoPreparado.setString(1, cliente.getNome());
             estadoPreparado.setString(2, cliente.getTelefone());
             estadoPreparado.setString(3, cliente.getEmail());
-            estadoPreparado.setInt(4, id);
+            estadoPreparado.setInt(4, cliente.getId());
             estadoPreparado.execute();
 
             conexao.commit();

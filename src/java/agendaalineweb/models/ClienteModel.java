@@ -38,9 +38,9 @@ public class ClienteModel extends AbstractTableModel {
         return clientes;
     }
 
-    public void updateById(int idConvertido, Cliente clienteEditado) {//recebemos da interface(AgendaAline.java).
+    public void updateById( Cliente clienteEditado) {//recebemos da interface(AgendaAline.java).
         ClienteDao daoCliente = new ClienteDao();
-        daoCliente.updateById(idConvertido, clienteEditado);//chamada do metodo updateById da DAO.
+        daoCliente.updateById(clienteEditado);//chamada do metodo updateById da DAO.
         clientes = selectAll();// Atualizar clientes editado
         this.fireTableDataChanged();// Atualizar a tabela editada
     }
