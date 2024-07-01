@@ -39,13 +39,13 @@ public class ProcedimentoDao {
                 procedimentos.add(procedimento);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
             }
 
         }
@@ -83,7 +83,7 @@ public class ProcedimentoDao {
 
     }
 
-    public void updateById(int idConvertido, Procedimento procedimentoEditado) {//recebe da Model.
+    public void updateById(Procedimento procedimentoEditado) {//recebe da Model.
         String sql = "update procedimento set nome = ?, duracao = ?, valor = ? where id = ? ";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
@@ -94,19 +94,19 @@ public class ProcedimentoDao {
             estadoPreparado.setString(1, procedimentoEditado.getNome());
             estadoPreparado.setString(2, procedimentoEditado.getDuracao());
             estadoPreparado.setDouble(3, procedimentoEditado.getValor());
-            estadoPreparado.setInt(4, idConvertido);
+            estadoPreparado.setInt(4, procedimentoEditado.getId());
             estadoPreparado.execute();
 
             conexao.commit();
-            JOptionPane.showMessageDialog(null, "Procedimento alterado com sucesso");
+           
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
             }
 
         }
@@ -150,7 +150,7 @@ public class ProcedimentoDao {
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "houve um problema, operacao cancelada");
+           ex.printStackTrace();
         } finally {
 
             try {
@@ -158,7 +158,7 @@ public class ProcedimentoDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
 
             }
 
@@ -184,7 +184,7 @@ public class ProcedimentoDao {
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "houve um problema, operacao cancelada");
+            ex.printStackTrace();
         } finally {
 
             try {
@@ -192,7 +192,7 @@ public class ProcedimentoDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
 
             }
 
@@ -222,5 +222,4 @@ public class ProcedimentoDao {
         return procedimentos;
 
     }
-
 }

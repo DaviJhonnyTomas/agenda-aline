@@ -164,24 +164,79 @@
 
                                 <tbody>
                                     <c:forEach var="procedimento" items="${procedimentos}">
-                                    <tr>
-                                        <td class="td-table">
-                                           ${procedimento.nome}
-                                        </td>
-                                        <td class="td-table">
-                                            ${procedimento.duracao} 
-                                        </td>
-                                        <td class="td-table">
-                                             ${procedimento.valor}
-                                        </td>
-                                        <td id="tb-funcoes">
-                                            <i class="ph ph-pencil"></i>
-                                            <i class="ph ph-trash"></i>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td class="td-table">
+                                                ${procedimento.nome}
+                                            </td>
+                                            <td class="td-table">
+                                                ${procedimento.duracao} 
+                                            </td>
+                                            <td class="td-table">
+                                                ${procedimento.valor}
+                                            </td>
+                                            <td id="tb-funcoes">
+                                                <a href="${caminhoContexto}/editar-procedimento?id=${procedimento.id}&nome=${procedimento.nome}&valor=${procedimento.valor}&duracao=${procedimento.duracao}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarProcedimento) -->
+                                                
+
+                                            </td>
+                                        </tr>
                                     </c:forEach>
                                 </tbody>
                             </table>
+
+
+                            <div class="modal fade" id="modalEditarProcedimento" tabindex="-1" role="dialog"
+                                 aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="TituloModalCentralizado">Editar</h5>
+                                            <button id="btn-close-modal" type="button" data-dismiss="modal"
+                                                    aria-label="Fechar">
+                                                <span id="x-close" aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="editar-procedimento" method="post">
+                                                <div class="form-group">
+                                                    <input name="id" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${procedimento.id}" hidden="true" >
+                                                </div>
+                                                <div class="form-group">
+
+                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${procedimento.nome}">
+
+                                                </div>
+                                                <div class="form-group">
+
+                                                    <input name="valor" type="text" class="form-control input-text" id="input-valor" placeholder="Valor" value="${procedimento.valor}">
+                                                </div>
+                                                <div class="form-group ">
+                                                    <input name="duracao" type="text" class="form-control input-text" id="input-duracao" placeholder="Duração" value="${procedimento.duracao}">
+
+                                                </div>
+                                                <input type="submit" class="btn-cadastro" value="editar">
+
+
+
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                                                    <%
+                                String modalParam = (String) request.getAttribute("modal");
+                                if ("modalEditarProcedimento".equals(modalParam)) {
+                            %>
+                            <script>
+
+                                $(document).ready(function () {
+                                    $('#modalEditarProcedimento').modal('show');
+                                });
+                            </script>
+                            <%
+                                }
+                            %>
                         </div>
 
                     </div>

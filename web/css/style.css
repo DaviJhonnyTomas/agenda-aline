@@ -229,4 +229,18 @@ html, body {
     color: whitesmoke;
     border: whitesmoke 3px solid;
 }
-
+#btnExcluir{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+a{
+    color: black;
+}
+a:hover{
+    text-decoration: none;
+    color: black;
+}
+form{
+    display: inline;
+}

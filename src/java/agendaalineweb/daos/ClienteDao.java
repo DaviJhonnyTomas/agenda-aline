@@ -7,15 +7,11 @@ package agendaalineweb.daos;
 
 import agendaalineweb.conect.Conexao;
 import agendaalineweb.entities.Cliente;
-import agendaalineweb.entities.Procedimento;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,13 +34,14 @@ public class ClienteDao {
             conexao.commit();
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+                        ex.printStackTrace();
+
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+            ex.printStackTrace();
             }
 
         }
@@ -66,7 +63,7 @@ public class ClienteDao {
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
+            ex.printStackTrace();
         } finally {
 
             try {
@@ -74,7 +71,7 @@ public class ClienteDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+            ex.printStackTrace();
 
             }
 
@@ -83,7 +80,7 @@ public class ClienteDao {
     }
 
     public ArrayList<Cliente> selectAll() {
-        String sql = "select * from cliente ";
+        String sql = "select * from cliente order by nome asc";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         ArrayList<Cliente> clientes = null;
@@ -119,17 +116,16 @@ public class ClienteDao {
             estadoPreparado.execute();
 
             conexao.commit();
-            JOptionPane.showMessageDialog(null, "Cliente alterado com sucesso");
+            
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
-
+               ex.printStackTrace();
             }
 
         }
@@ -180,15 +176,14 @@ public class ClienteDao {
                 clientes.add(cliente);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema a operacao foi cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
-
+                ex.printStackTrace();
             }
 
         }
@@ -214,7 +209,7 @@ public class ClienteDao {
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "houve um problema, operacao cancelada");
+            ex.printStackTrace();
         } finally {
 
             try {
@@ -222,7 +217,7 @@ public class ClienteDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
 
             }
 

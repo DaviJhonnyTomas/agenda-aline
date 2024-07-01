@@ -114,14 +114,14 @@ public class AgendamentoDao {
                 agendamentos.add(agendamento);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+            ex.printStackTrace();
 
             }
 
@@ -167,16 +167,16 @@ public class AgendamentoDao {
             estadoPreparado.setInt(1, id);
             estadoPreparado.execute();
             conexao.commit();
-            JOptionPane.showMessageDialog(null, "Agendamento deletado com sucesso");
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
+                        ex.printStackTrace();
+
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+            ex.printStackTrace();
             }
 
         }
@@ -199,14 +199,14 @@ public class AgendamentoDao {
                 return true;
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+            ex.printStackTrace();
 
             }
 

@@ -28,9 +28,9 @@ public class ProcedimentoModel {
         daoProcedimento.insert(procedimento);//chamada do metodo insert da DAO.
     }
 
-    public void updateById(int idConvertido, Procedimento procedimentoEditado) {//recebemos da interface(AgendaAline.java).
+    public void updateById(Procedimento procedimentoEditado) {//recebemos da interface(AgendaAline.java).
         ProcedimentoDao daoProcedimento = new ProcedimentoDao();
-        daoProcedimento.updateById(idConvertido, procedimentoEditado);//chamada do metodo updateById da DAO.
+        daoProcedimento.updateById(procedimentoEditado);//chamada do metodo updateById da DAO.
         }
 
     public ArrayList<Procedimento> selectAll() {//Tipo do retorno do metodo = ArrayList.
@@ -69,4 +69,6 @@ public class ProcedimentoModel {
         return procedimentos;
         
     }
+
+    
 }

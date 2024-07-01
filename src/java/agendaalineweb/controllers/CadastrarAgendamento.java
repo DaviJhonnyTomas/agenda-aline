@@ -80,7 +80,7 @@ public class CadastrarAgendamento extends HttpServlet {
         String idProcedimento = request.getParameter("idProcedimento");
         String hora = request.getParameter("hora");
         String data = request.getParameter("data"); 
-        System.out.println(data);
+        System.out.println("idCliente: " + idCliente + "\nidProcedimento: " + idProcedimento + "\ndata: "+data);
         DataModel dataModel = new DataModel();
         LocalDate dataConvertida = LocalDate.parse(data);
         Agendamento agendamento = new Agendamento(Integer.parseInt(idProcedimento), LocalTime.parse(hora), dataConvertida, Integer.parseInt(idCliente));

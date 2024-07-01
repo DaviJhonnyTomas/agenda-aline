@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 
 @WebServlet(name = "EditarCliente", urlPatterns = {"/editar-cliente"})
@@ -25,8 +26,21 @@ public class EditarCliente extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = request.getParameter("id");
-        request.setAttribute("id", id);
+        String nome = request.getParameter("nome");
+        String email = request.getParameter("email");
+        String telefone = request.getParameter("telefone");
+        
+        Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
+        request.setAttribute("cliente", cliente);
         request.setAttribute("modal", "modalEditarCliente");
+        
+        ClienteModel clienteModel = new ClienteModel();
+        ArrayList<Cliente> clientes = clienteModel.selectAll();
+        request.setAttribute("clientes", clientes);
+        
+        String caminhoContexto = request.getContextPath();
+        request.setAttribute("caminhoContexto", caminhoContexto);
+        
         request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
     }
 

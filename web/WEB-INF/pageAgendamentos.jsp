@@ -72,22 +72,22 @@
                     <h2 id="titulo">Agendamentos</h2>
                     <form action="${caminhoContexto}/cadastrar-agendamento" method="post">
                         <div class="input-group mb-3">
-                        
-                        <select name="idCliente" class="form-control input-text custom-select" id="inputGroupSelect01">
-                          <option value="0" selected>Escolher cliente</option>
-                          <c:forEach var="cliente" items="${clientes}">
-                          <option value="${cliente.id}">${cliente.nome}</option>
-                          </c:forEach>
-                        </select>
-                      </div>
-                      <div class="input-group mb-3">
-                      <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
-                        <option value="0" selected>Escolher Procedimento</option>
-                        <c:forEach var="procedimento" items="${procedimentos}">
-                        <option value="${procedimento.id}">${procedimento.nome}</option>
-                        </c:forEach>
-                      </select>
-                    </div>
+
+                            <select name="idCliente" class="form-control input-text custom-select" id="inputGroupSelect01">
+                                <option value="0" selected>Escolher cliente</option>
+                                <c:forEach var="cliente" items="${clientes}">
+                                    <option value="${cliente.id}">${cliente.nome}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
+                                <option value="0" selected>Escolher Procedimento</option>
+                                <c:forEach var="procedimento" items="${procedimentos}">
+                                    <option value="${procedimento.id}">${procedimento.nome}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
                         <div class="form-group ">
                             <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data">
 
@@ -173,35 +173,93 @@
 
                                         <tr>
                                             <td class="td-table">
-                                                 ${clientesAg[status.index].nome}
+                                                ${clientesAg[status.index].nome}
                                             </td>
                                             <td class="td-table">
-                                                 ${procedimentosAg[status.index].nome}
+                                                ${procedimentosAg[status.index].nome}
                                             </td>
                                             <td class="td-table">
-                                                 ${agendamento.data}
+                                                ${agendamento.data}
                                             </td>
                                             <td class="td-table">
-                                                 ${agendamento.hora}
+                                                ${agendamento.hora}
                                             </td>
                                             <td id="tb-funcoes">
-                                                <i class="ph ph-pencil"></i>
-                                                <i class="ph ph-trash"></i>
+                                                <a href="${caminhoContexto}/editar-agendamento?id=${agendamento.id}&idCliente=${agendamento.idCliente}&idProcedimento=${agendamento.idProcedimento}&data=${agendamento.data}&hora=${agendamento.hora}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
+                                                <form action="excluir-agendamento" method="post">
+                                                    <input name="id" value="${agendamento.id}" hidden="true">
+                                                    <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>
+                                                </form>
                                             </td>
                                         </tr>
-                                        </c:forEach>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                            <div class="modal fade" id="modalEditarAgendamento" tabindex="-1" role="dialog"
+                                 aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="TituloModalCentralizado">Editar</h5>
+                                            <button id="btn-close-modal" type="button" data-dismiss="modal"
+                                                    aria-label="Fechar">
+                                                <span id="x-close" aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="editar-agendamento" method="post">
+                                                <div class="form-group">
+                                                    <input name="id" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${agendamento.id}" hidden="true" >
+                                                </div>
+                                                <div class="form-group">
 
+                                                    <input name="idCliente" type="text" class="form-control input-text" id="input-nome" placeholder="Cliente" value="${agendamento.idCliente}">
+
+                                                </div>
+                                                <div class="form-group">
+
+                                                    <input name="idProcedimento" type="text" class="form-control input-text" id="input-procedimento" placeholder="procedimento" value="${agendamento.idProcedimento}">
+                                                </div>
+                                                <div class="form-group ">
+                                                    <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data" value="${agendamento.data}">
+                                                     <div class="form-group ">
+                                                    <input name="hora" type="time" class="form-control input-text" id="input-hora" placeholder="Hora" value="${agendamento.hora}">
+
+                                                </div>
+                                                <input type="submit" class="btn-cadastro" value="editar">
+
+
+
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
+
+                            <%
+                                String modalParam = (String) request.getAttribute("modal");
+                                if ("modalEditarAgendamento".equals(modalParam)) {
+                            %>
+                            <script>
+
+                                $(document).ready(function () {
+                                    $('#modalEditarAgendamento').modal('show');
+                                });
+                            </script>
+                            <%
+                                }
+                            %>
                         </div>
+
                     </div>
                 </div>
-                <div id="footer" class="fixed-bottom text-center py-3">
-                    <span class=" mx-auto">www.alinesimao.pt</span>
-                </div>
+            </div>
+        </div>
+        <div id="footer" class="fixed-bottom text-center py-3">
+            <span class=" mx-auto">www.alinesimao.pt</span>
+        </div>
 
-            </body>
+    </body>
 
-        </html>
+</html>

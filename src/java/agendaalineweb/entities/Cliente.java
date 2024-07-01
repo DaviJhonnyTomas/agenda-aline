@@ -11,10 +11,10 @@ package agendaalineweb.entities;
  */
 public class Cliente {
 
-    int id;
-    String nome;
-    String telefone;
-    String email;
+    private int id;
+    private String nome;
+    private String telefone;
+    private String email;
 
     public Cliente(int id, String nome, String telefone, String email) {
         this.id = id;

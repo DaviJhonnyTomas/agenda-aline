@@ -178,8 +178,11 @@
                                                 ${cliente.email}
                                             </td>
                                             <td id="tb-funcoes">
-                                                <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
-                                                <a href="${caminhoContexto}/excluir-cliente?id=${cliente.id}"><i class="ph ph-trash"></i></a>
+                                                <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}&nome=${cliente.nome}&telefone=${cliente.telefone}&email=${cliente.email}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
+                                                <form action="excluir-cliente" method="post">
+                                                    <input name="id" value="${cliente.id}" hidden="true">
+                                                    <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>
+                                                </form>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -202,21 +205,21 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="${caminhoContexto}/editar-cliente" method="post">
+                                            <form action="editar-cliente" method="post">
                                                 <div class="form-group">
-                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${id}" hidden="true">
+                                                    <input name="id" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${cliente.id}" hidden="true" >
                                                 </div>
                                                 <div class="form-group">
 
-                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome">
+                                                    <input name="nome" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${cliente.nome}">
 
                                                 </div>
                                                 <div class="form-group">
 
-                                                    <input name="telefone" type="text" class="form-control input-text" id="input-telefone" placeholder="Telefone">
+                                                    <input name="telefone" type="text" class="form-control input-text" id="input-telefone" placeholder="Telefone" value="${cliente.telefone}">
                                                 </div>
                                                 <div class="form-group ">
-                                                    <input name="email" type="email" class="form-control input-text" id="input-email" placeholder="Email">
+                                                    <input name="email" type="email" class="form-control input-text" id="input-email" placeholder="Email" value="${cliente.email}">
 
                                                 </div>
                                                 <input type="submit" class="btn-cadastro" value="editar">
