@@ -211,54 +211,61 @@
                                                 <div class="form-group">
                                                     <input name="id" type="text" class="form-control input-text" id="input-nome" placeholder="Nome" value="${agendamento.id}" hidden="true" >
                                                 </div>
-                                                <div class="form-group">
-
-                                                    <input name="idCliente" type="text" class="form-control input-text" id="input-nome" placeholder="Cliente" value="${agendamento.idCliente}">
-
+                                                <div class="input-group mb-3">
+                                                    <select name ="idCliente" class="form-control input-text custom-select" id="inputGroupSelect01">
+                                                        <option value="0" selected>Escolher Cliente</option>
+                                                        <c:forEach var="cliente" items="${clientes}">
+                                                            <option value="${cliente.id}">${cliente.nome}</option>
+                                                        </c:forEach>
+                                                    </select>
                                                 </div>
-                                                <div class="form-group">
-
-                                                    <input name="idProcedimento" type="text" class="form-control input-text" id="input-procedimento" placeholder="procedimento" value="${agendamento.idProcedimento}">
+                                                <div class="input-group mb-3">
+                                                    <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
+                                                        <option value="0" selected>${nomeProcedimentoSelecionado}</option>
+                                                        <c:forEach var="procedimento" items="${procedimentos}">
+                                                            <option value="${procedimento.id}">${procedimento.nome}</option>
+                                                        </c:forEach>
+                                                    </select>
                                                 </div>
                                                 <div class="form-group ">
                                                     <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data" value="${agendamento.data}">
-                                                     <div class="form-group ">
-                                                    <input name="hora" type="time" class="form-control input-text" id="input-hora" placeholder="Hora" value="${agendamento.hora}">
+                                                    <div class="form-group ">
+                                                        <input name="hora" type="time" class="form-control input-text" id="input-hora" placeholder="Hora" value="${agendamento.hora}">
 
+                                                    </div>
+                                                    <input type="submit" class="btn-cadastro" value="editar">
+
+
+
+                                                    </form>
                                                 </div>
-                                                <input type="submit" class="btn-cadastro" value="editar">
 
-
-
-                                            </form>
                                         </div>
-
                                     </div>
                                 </div>
+
+                                <%
+                                    String modalParam = (String) request.getAttribute("modal");
+                                    if ("modalEditarAgendamento".equals(modalParam)) {
+                                %>
+                                <script>
+
+                                    $(document).ready(function () {
+                                        $('#modalEditarAgendamento').modal('show');
+                                    });
+                                </script>
+                                <%
+                                    }
+                                %>
                             </div>
 
-                            <%
-                                String modalParam = (String) request.getAttribute("modal");
-                                if ("modalEditarAgendamento".equals(modalParam)) {
-                            %>
-                            <script>
-
-                                $(document).ready(function () {
-                                    $('#modalEditarAgendamento').modal('show');
-                                });
-                            </script>
-                            <%
-                                }
-                            %>
                         </div>
-
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="footer" class="fixed-bottom text-center py-3">
-            <span class=" mx-auto">www.alinesimao.pt</span>
-        </div>
+            <div id="footer" class="fixed-bottom text-center py-3">
+                <span class=" mx-auto">www.alinesimao.pt</span>
+            </div>
 
     </body>
 

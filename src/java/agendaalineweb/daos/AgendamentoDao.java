@@ -60,7 +60,7 @@ public class AgendamentoDao {
 
     }
 
-    public void updateById(int id, Agendamento agendamento) {//recebe da Model.
+    public void updateById(Agendamento agendamento) {//recebe da Model.
         String sql = "update agendamento set idProcedimento = ?, hora = ?, data = ?, idCliente = ? where id = ? ";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
@@ -74,7 +74,7 @@ public class AgendamentoDao {
             Date dataConvertida = Date.valueOf(agendamento.getData());
             estadoPreparado.setDate(3, dataConvertida);
             estadoPreparado.setInt(4, agendamento.getIdCliente());
-            estadoPreparado.setInt(5, id);// where ID ?.
+            estadoPreparado.setInt(5, agendamento.getId());// where ID ?.
             estadoPreparado.execute();
             conexao.commit();
             System.out.println("Agendamento alterado com sucesso");
