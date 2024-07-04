@@ -6,6 +6,10 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="agendaalineweb.models.ClienteModel"%>
+<%@ page import="agendaalineweb.entities.Cliente"%>
+<%@ page import="agendaalineweb.entities.Agendamento"%>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -173,7 +177,14 @@
 
                                         <tr>
                                             <td class="td-table">
-                                                ${clientesAg[status.index].nome}
+                                                <% 
+                                                    Agendamento agendamento = (Agendamento) pageContext.getAttribute("agendamento");
+                                                    ClienteModel clienteModel = new ClienteModel();
+                                                    Cliente cliente = clienteModel.selectById(agendamento.getIdCliente());
+                                                    
+                                                %>
+                                                
+                                                ${cliente.nome}
                                             </td>
                                             <td class="td-table">
                                                 ${procedimentosAg[status.index].nome}
@@ -213,17 +224,23 @@
                                                 </div>
                                                 <div class="input-group mb-3">
                                                     <select name ="idCliente" class="form-control input-text custom-select" id="inputGroupSelect01">
-                                                        <option value="0" selected>Escolher Cliente</option>
+                                                        <option value="${clienteSelecionado.id}" selected>${clienteSelecionado.nome}</option>
                                                         <c:forEach var="cliente" items="${clientes}">
-                                                            <option value="${cliente.id}">${cliente.nome}</option>
+                                                            <c:if test="${cliente.id != clienteSelecionado.id}">
+                                                                <option value="${cliente.id}">${cliente.nome}</option>
+                                                            </c:if>
+
                                                         </c:forEach>
                                                     </select>
                                                 </div>
                                                 <div class="input-group mb-3">
                                                     <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
-                                                        <option value="0" selected>${nomeProcedimentoSelecionado}</option>
+                                                        <option value="${procedimentoSelecionado.id}" selected>${procedimentoSelecionado.nome}</option>
                                                         <c:forEach var="procedimento" items="${procedimentos}">
-                                                            <option value="${procedimento.id}">${procedimento.nome}</option>
+                                                            <c:if test="${procedimento.id != procedimentoSelecionado.id}"> <!-- esse if serve para "filtrarmos" o procedimento que já esta selecionado. problema: estava aparecendo o procedimento selecionado duas vezes -->
+                                                                <option value="${procedimento.id}">${procedimento.nome}</option> <!-- só vai cair, se o id do procedimento for diferente (!=) do id do procedimento selecionado -->
+                                                            </c:if>
+
                                                         </c:forEach>
                                                     </select>
                                                 </div>

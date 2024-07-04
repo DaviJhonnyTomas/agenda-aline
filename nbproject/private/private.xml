@@ -4,23 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageAgendamentos.jsp</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageCliente.jsp</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/EditarCliente.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Agendamento.java</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/daos/AgendamentoDao.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/CadastrarProcedimento.java</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/CadastrarAgendamento.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/DataModel.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/css/style.css</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/ClienteModel.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/daos/ClienteDao.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/CadastrarCliente.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/daos/ProcedimentoDao.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/EditarProcedimento.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/ProcedimentoModel.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/ExcluirCliente.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageProcedimentos.jsp</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/AgendamentoModel.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Cliente.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/EditarAgendamento.java</file>
         </group>
     </open-files>
 </project-private>

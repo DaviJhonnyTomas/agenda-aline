@@ -15,20 +15,16 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Dell
  */
-public class ClienteModel extends AbstractTableModel {
-
-    ArrayList<Cliente> clientes;
-    String[] colunas = {"id", "nome", "telefone", "email"};
+public class ClienteModel {
 
     public ClienteModel() {
-        clientes = selectAll();
+        
     }
 
     public void insert(Cliente cliente) {//recebe da interface um cliente(AgendaAline.java).
         ClienteDao daoCliente = new ClienteDao();
         daoCliente.insert(cliente);//chamada do metodo insert da DAO.
-        clientes = selectAll();// Atualizar clientes inseridos.
-        this.fireTableDataChanged(); // atualizar os dados da nossa tabela.
+        
     }
 
     public ArrayList<Cliente> selectAll() {//Tipo do retorno do metodo = ArrayList.
@@ -41,15 +37,13 @@ public class ClienteModel extends AbstractTableModel {
     public void updateById( Cliente clienteEditado) {//recebemos da interface(AgendaAline.java).
         ClienteDao daoCliente = new ClienteDao();
         daoCliente.updateById(clienteEditado);//chamada do metodo updateById da DAO.
-        clientes = selectAll();// Atualizar clientes editado
-        this.fireTableDataChanged();// Atualizar a tabela editada
+       
     }
 
     public void deleteById(int id) {
         ClienteDao daoCliente = new ClienteDao();
         daoCliente.deleteById(id);
-        clientes = selectAll();// Atualizar clientes editado
-        this.fireTableDataChanged();// Atualizar a tabela editada
+        
     }
 
     public boolean verificarClienteById(int idConvertido) {
@@ -59,40 +53,11 @@ public class ClienteModel extends AbstractTableModel {
         return clienteExiste;
     }
 
-    @Override
-    public int getRowCount() {
-        return clientes.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return colunas.length;
-
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        if (columnIndex == 0) {
-            return clientes.get(rowIndex).getId();
-        } else if (columnIndex == 1) {
-            return clientes.get(rowIndex).getNome();
-        } else if (columnIndex == 2) {
-            return clientes.get(rowIndex).getTelefone();
-        } else if (columnIndex == 3) {
-            return clientes.get(rowIndex).getEmail();
-        }
-        return "null";
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return colunas[column];
-    }
 
     public ArrayList<Cliente> selectByNome(String pesquisar) {
         ClienteDao clienteDao = new ClienteDao();
-        clientes = clienteDao.selectByNome(pesquisar);// Atualizar nossos clientes
-        this.fireTableDataChanged(); // atualizar os dados da nossa tabela.
+        ArrayList<Cliente> clientes = clienteDao.selectByNome(pesquisar);// Atualizar nossos clientes
+       
         return clientes;
 
     }

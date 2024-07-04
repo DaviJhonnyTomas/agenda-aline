@@ -49,6 +49,10 @@ public class EditarAgendamento extends HttpServlet {
         ClienteModel clienteModel = new ClienteModel();
         ArrayList<Cliente> clientes = clienteModel.selectAll();
         request.setAttribute("clientes", clientes);
+        Procedimento procedimentoSelecionado = procedimentoModel.selectById(Integer.parseInt(idProcedimento));
+        request.setAttribute("procedimentoSelecionado", procedimentoSelecionado);
+        Cliente clienteSelecionado = clienteModel.selectById(Integer.parseInt(idCliente));
+        request.setAttribute("clienteSelecionado", clienteSelecionado);
 
         request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
 
