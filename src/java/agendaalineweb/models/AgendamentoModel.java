@@ -58,4 +58,16 @@ public class AgendamentoModel {
         return agendamentoExiste;
     }
 
+    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes) throws SQLException {
+        AgendamentoDao daoAgendamento = new AgendamentoDao();
+        ArrayList<Agendamento> agendamentos = daoAgendamento.selectAgendamentosByIdsClientes(idsClientes);
+        return agendamentos;
+    }
+
+    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome) throws SQLException {
+        AgendamentoDao agendamentoDao = new AgendamentoDao();
+        ArrayList<Agendamento> agendamentos = agendamentoDao.selectByDataAndNome(data, nome);
+       return agendamentos;
+    }
+
 }

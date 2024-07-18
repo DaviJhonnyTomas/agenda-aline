@@ -59,6 +59,7 @@ public class CadastrarAgendamento extends HttpServlet {
             request.setAttribute("procedimentos", procedimentos);
             ArrayList<Cliente> clientes = modelCliente.selectAll();
             request.setAttribute("clientes", clientes);
+            
             request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(CadastrarAgendamento.class.getName()).log(Level.SEVERE, null, ex);
@@ -73,14 +74,38 @@ public class CadastrarAgendamento extends HttpServlet {
         String idProcedimento = request.getParameter("idProcedimento");
         String hora = request.getParameter("hora");
         String data = request.getParameter("data"); 
-        System.out.println("idCliente: " + idCliente + "\nidProcedimento: " + idProcedimento + "\ndata: "+data);
+        
         DataModel dataModel = new DataModel();
         LocalDate dataConvertida = LocalDate.parse(data);
-        Agendamento agendamento = new Agendamento(Integer.parseInt(idProcedimento), LocalTime.parse(hora), dataConvertida, Integer.parseInt(idCliente));
+        
+        LocalDate dataHoje = LocalDate.now();
+        String mensagem = null;
+        if(dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)){
+            Agendamento agendamento = new Agendamento(Integer.parseInt(idProcedimento), LocalTime.parse(hora), dataConvertida, Integer.parseInt(idCliente));
+            AgendamentoModel agendamentoModel = new AgendamentoModel();
+            agendamentoModel.insert(agendamento);
+            
+            
+            
+        }else{
+            mensagem = "A data informada não pode ser anterior a data de hoje";
+            request.setAttribute("modalErro", mensagem);
+        }
         AgendamentoModel agendamentoModel = new AgendamentoModel();
-        agendamentoModel.insert(agendamento);
+        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
+        request.setAttribute("agendamentos", agendamentos);
+        ClienteModel clienteModel = new ClienteModel();
+        ArrayList<Cliente> clientes = clienteModel.selectAll();
+        request.setAttribute("clientes", clientes);
+        ProcedimentoModel procedimentoModel = new ProcedimentoModel();
+         ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        request.setAttribute("procedimentos", procedimentos);
+        
         String caminhoContexto = request.getContextPath();
-        response.sendRedirect(caminhoContexto + "/cadastrar-agendamento");
+        request.setAttribute("caminhoContexto", caminhoContexto);
+        
+        request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
+        
 
     }
 

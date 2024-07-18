@@ -161,7 +161,7 @@ public class ClienteDao {
     }
 
     public ArrayList<Cliente> selectByNome(String pesquisar) {
-        String sql = "select * from cliente where nome like ? ";
+        String sql = "select * from cliente where nome like ? "; //like => semelhante a
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         ArrayList<Cliente> clientes = null;

@@ -8,8 +8,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="agendaalineweb.models.ClienteModel"%>
 <%@ page import="agendaalineweb.entities.Cliente"%>
+<%@ page import="agendaalineweb.models.ProcedimentoModel"%>
+<%@ page import="agendaalineweb.entities.Procedimento"%>
 <%@ page import="agendaalineweb.entities.Agendamento"%>
-
+<%@ page import="agendaalineweb.models.DataModel"%>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -154,12 +156,14 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="">
+                                            <form action="${caminhoContexto}/filtrar-agendamento" method="GET">
 
-                                                <input id="input-filtrar" class="form-control" type="text" placeholder="Digite o nome do cliente">
+                                                <input id="input-filtrar" class="form-control mb-3" type="text" placeholder="Digite o nome do cliente" name="cliente">
+                                                <input type="date" class="form-control mb-3" placeholder="Selecione a data desejada" name="data">
+
                                                 <div class="modal-footer d-flex justify-content-center">
 
-                                                    <button id="btn-filtrar" type="button" class="btn">Filtrar pelo agendamento</button>
+                                                    <button id="btn-filtrar" type="submit" class="btn">Filtrar pelo agendamento</button>
                                                 </div>
 
                                             </form>
@@ -181,16 +185,28 @@
                                                     Agendamento agendamento = (Agendamento) pageContext.getAttribute("agendamento");
                                                     ClienteModel clienteModel = new ClienteModel();
                                                     Cliente cliente = clienteModel.selectById(agendamento.getIdCliente());
-                                                    
+                                                    pageContext.setAttribute("cliente", cliente);
                                                 %>
-                                                
+
                                                 ${cliente.nome}
                                             </td>
                                             <td class="td-table">
-                                                ${procedimentosAg[status.index].nome}
+                                                <% 
+                                                    
+                                                    ProcedimentoModel procedimentoModel = new ProcedimentoModel();
+                                                    Procedimento procedimento = procedimentoModel.selectById(agendamento.getIdProcedimento());
+                                                    pageContext.setAttribute("procedimento", procedimento);
+                                                %>
+
+                                                ${procedimento.nome}
                                             </td>
                                             <td class="td-table">
-                                                ${agendamento.data}
+                                                <%
+                                                   DataModel dataModel = new DataModel();
+                                                   String dataConvertida = dataModel.converterLocalDateParaDataString(agendamento.getData());
+                                                   pageContext.setAttribute("dataConvertida", dataConvertida);
+                                                %>
+                                                ${dataConvertida}
                                             </td>
                                             <td class="td-table">
                                                 ${agendamento.hora}
@@ -276,6 +292,38 @@
                                 %>
                             </div>
 
+                            <div class="modal" id="modalErro" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Erro</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>${modalErro}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                        <%
+                                    String modalParamErro = (String) request.getAttribute("modalErro");
+                                    if (!modalParamErro.equals(null)) {
+                                %>
+                                <script>
+
+                                    $(document).ready(function () {
+                                        $('#modalErro').modal('show');
+                                    });
+                                </script>
+                                <%
+                                    }
+                                %>
+                            </div>
+                                        
                         </div>
                     </div>
                 </div>

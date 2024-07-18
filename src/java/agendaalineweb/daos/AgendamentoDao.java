@@ -193,7 +193,7 @@ public class AgendamentoDao {
             estadoPreparado = conexao.prepareStatement(sql);
             estadoPreparado.setInt(1, idAgendamentoConvertido);
             ResultSet retorno = estadoPreparado.executeQuery();
-
+            
             if (retorno.next() == true) {
 
                 return true;
@@ -213,6 +213,42 @@ public class AgendamentoDao {
         }
         return false;
 
+    }
+
+    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes) throws SQLException {
+        String sql = "select * from agendamento";
+        Connection conn = new Conexao().getConnection();
+        PreparedStatement estadoPreparado = conn.prepareStatement(sql);
+        ResultSet rs = estadoPreparado.executeQuery();
+        ArrayList<Agendamento> agendamentos = new ArrayList();
+        while (rs.next()) {            
+            int idClienteBanco = rs.getInt("idCliente");
+            for (int i = 0; i < idsClientes.length; i++) {
+                if(idsClientes[i] == idClienteBanco){
+                    Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
+                    agendamentos.add(agendamento);
+                }
+            }
+        }
+        return agendamentos;
+    }
+    //variáveis, métodos, objetos, tipos de dados primitivos
+    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome) throws SQLException {
+        String sql = "SELECT ag.*, cl.nome FROM Agendamento ag INNER JOIN Cliente cl ON ag.idCliente = cl.id WHERE ag.data = ? and cl.nome LIKE ? ";//INNER JOIN -> junção interna de tabelas
+        Connection conn = new Conexao().getConnection();
+        PreparedStatement estadoPreparado = conn.prepareStatement(sql);
+        estadoPreparado.setDate(1, data);
+        estadoPreparado.setString(2, nome+"%");
+        ResultSet rs = estadoPreparado.executeQuery();
+        
+        ArrayList<Agendamento> agendamentos = new ArrayList<>();
+        
+        while(rs.next() == true){
+            Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
+            agendamentos.add(agendamento);
+        }
+        return agendamentos;
+        
     }
 
 }
