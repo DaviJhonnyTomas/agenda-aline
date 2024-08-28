@@ -15,13 +15,32 @@ public class Cliente {
     private String nome;
     private String telefone;
     private String email;
+    private int idNegocio;
 
-    public Cliente(int id, String nome, String telefone, String email) {
+    public Cliente(int id, String nome, String telefone, String email, int idNegocio) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
+        this.idNegocio = idNegocio;
     }
+
+    public Cliente(String nome, String telefone, String email, int idNegocio) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.email = email;
+        this.idNegocio = idNegocio;
+    }
+
+    public int getIdNegocio() {
+        return idNegocio;
+    }
+
+    public void setIdNegocio(int idNegocio) {
+        this.idNegocio = idNegocio;
+    }
+    
+    
 
     public int getId() {
         return id;

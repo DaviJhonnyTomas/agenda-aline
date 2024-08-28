@@ -311,7 +311,7 @@
                                 </div>
                                         <%
                                     String modalParamErro = (String) request.getAttribute("modalErro");
-                                    if (!modalParamErro.equals(null)) {
+                                    if (modalParamErro != null) {
                                 %>
                                 <script>
 

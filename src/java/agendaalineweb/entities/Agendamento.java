@@ -15,33 +15,38 @@ import java.time.LocalTime;
 public class Agendamento {
 
     private int id;
-    private int idProcedimento;
     private LocalTime hora;
     private LocalDate data;
     private int idCliente;
+    private int idUsuario;
 
-    public Agendamento(int id, int idProcedimento, LocalTime hora, LocalDate data, int idCliente) {
+    public Agendamento(int id, LocalTime hora, LocalDate data, int idCliente, int idUsuario) {
         this.id = id;
-        this.idProcedimento = idProcedimento;
         this.hora = hora;
         this.data = data;
         this.idCliente = idCliente;
+        this.idUsuario = idUsuario;
     }
 
-    public Agendamento(int idProcedimento, LocalTime hora, LocalDate data, int idCliente) {
-        this.idProcedimento = idProcedimento;
+    public Agendamento(LocalTime hora, LocalDate data, int idCliente, int idUsuario) {
         this.hora = hora;
         this.data = data;
         this.idCliente = idCliente;
+        this.idUsuario = idUsuario;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getIdProcedimento() {
-        return idProcedimento;
-    }
 
     public LocalTime getHora() {
         return hora;
@@ -62,10 +67,6 @@ public class Agendamento {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setIdProcedimento(int idProcedimento) {
-        this.idProcedimento = idProcedimento;
     }
 
     public void setHora(LocalTime hora) {

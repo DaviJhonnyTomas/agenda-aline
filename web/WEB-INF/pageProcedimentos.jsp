@@ -144,12 +144,14 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="">
+                                           <form action="${caminhoContexto}/filtrar-procedimento" method="GET">
 
-                                                <input id="input-filtrar" class="form-control" type="text" placeholder="Digite o nome do procedimento">
+                                                <input name="procedimento" id="input-filtrar" class="form-control" type="text"
+                                                       placeholder="Digite o nome do procedimento">
                                                 <div class="modal-footer d-flex justify-content-center">
 
-                                                    <button id="btn-filtrar" type="button" class="btn">Filtrar pelo procedimento</button>
+                                                    <button id="btn-filtrar" type="submit" class="btn">Filtrar pelo
+                                                        nome</button>
                                                 </div>
 
                                             </form>
@@ -224,7 +226,7 @@
                                     </div>
                                 </div>
                             </div>
-                                                    <%
+                            <%
                                 String modalParam = (String) request.getAttribute("modal");
                                 if ("modalEditarProcedimento".equals(modalParam)) {
                             %>

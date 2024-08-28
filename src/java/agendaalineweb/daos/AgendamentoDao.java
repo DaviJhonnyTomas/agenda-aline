@@ -2,7 +2,8 @@ package agendaalineweb.daos;
 
 import agendaalineweb.conect.Conexao;
 import agendaalineweb.entities.Agendamento;
-import agendaalineweb.entities.Cliente;
+import agendaalineweb.entities.Agendamento_Procedimento;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -11,11 +12,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,21 +25,30 @@ import javax.swing.JOptionPane;
  */
 public class AgendamentoDao {
 
-    public void insert(Agendamento agendamento) {
-        String sql = "insert into agendamento ( idProcedimento, hora, data, idCliente ) values(?, ?, ?, ?) ";
+    public void insert(Agendamento agendamento, int[] idProcedimentos) {
+        String sql = "insert into agendamento (hora, data, idCliente, idUsuario ) values(?, ?, ?, ?) ";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
+        int id = 0;
         try {
             conexao = new Conexao().getConnection();
             conexao.setAutoCommit(false);
-            estadoPreparado = conexao.prepareStatement(sql);
-            estadoPreparado.setInt(1, agendamento.getIdProcedimento());
+            estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
             Time horaConvertida = Time.valueOf(agendamento.getHora());
-            estadoPreparado.setTime(2, horaConvertida);
+            estadoPreparado.setTime(1, horaConvertida);
             Date dataConvertida = Date.valueOf(agendamento.getData());
-            estadoPreparado.setDate(3, dataConvertida);
-            estadoPreparado.setInt(4, agendamento.getIdCliente());
-            estadoPreparado.execute();
+            estadoPreparado.setDate(2, dataConvertida);
+            estadoPreparado.setInt(3, agendamento.getIdCliente());
+            estadoPreparado.setInt(4, agendamento.getIdUsuario());
+            ResultSet rs = estadoPreparado.executeQuery();
+            id = rs.getInt(1);
+            
+            for (int i = 0; i < idProcedimentos.length; i++) {
+                Agendamento_Procedimento pa = new Agendamento_Procedimento(idProcedimentos[i], id);
+                insertProcedimentoAgendamento(pa);
+            }
+            
             conexao.commit();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -53,45 +59,70 @@ public class AgendamentoDao {
                 conexao.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                
+
             }
 
         }
+       
 
     }
 
-    public void updateById(Agendamento agendamento) {//recebe da Model.
-        String sql = "update agendamento set idProcedimento = ?, hora = ?, data = ?, idCliente = ? where id = ? ";
+    public void insertProcedimentoAgendamento(Agendamento_Procedimento pa) throws SQLException {
+        String sql = "insert into Procedimento_Agendamento (idProcedimento, idAgendamento) values (?,?)";
+        Connection conn = new Conexao().getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, pa.getIdProcedimento());
+        ps.setInt(2, pa.getIdAgendamento());
+        ps.execute();
+        ps.close();
+        conn.close();
+    }
+
+    public void updateById(Agendamento agendamento, int[] idProcedimentos) {//recebe da Model.
+        String sql = "update agendamento set hora = ?, data = ?, idCliente = ?, idUsuario = ? where id = ? ";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         try {
             conexao = new Conexao().getConnection();
             conexao.setAutoCommit(false);
             estadoPreparado = conexao.prepareStatement(sql);
-            estadoPreparado.setInt(1, agendamento.getIdProcedimento());
             Time horaConvertida = Time.valueOf(agendamento.getHora());
-            estadoPreparado.setTime(2, horaConvertida);
+            estadoPreparado.setTime(1, horaConvertida);
             Date dataConvertida = Date.valueOf(agendamento.getData());
-            estadoPreparado.setDate(3, dataConvertida);
-            estadoPreparado.setInt(4, agendamento.getIdCliente());
+            estadoPreparado.setDate(2, dataConvertida);
+            estadoPreparado.setInt(3, agendamento.getIdCliente());
+            estadoPreparado.setInt(4, agendamento.getIdUsuario());
             estadoPreparado.setInt(5, agendamento.getId());// where ID ?.
             estadoPreparado.execute();
+            
+            // 1
+            //Jhonata
+            //unhas2 = 2, unhas3 = 3
+            if (idProcedimentos.length != 0) {
+                for (int i = 0; i < idProcedimentos.length; i++) {
+                    Agendamento_Procedimento pa = new Agendamento_Procedimento(idProcedimentos[i], agendamento.getId());
+                    updateProcedimentoAgendamento(pa);
+                }
+            }
+            
             conexao.commit();
-            System.out.println("Agendamento alterado com sucesso");
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Houve um problema operacao cancelada");
+           ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Houve um problema ao finalizar a conexao");
+                ex.printStackTrace();
 
             }
 
         }
 
+    }
+    public void updateProcedimentoAgendamento(Agendamento_Procedimento pa) {
+        String sql = "update Agendamento_Procedimento set idProcedimento = ? where id = ?";
     }
 
     public ArrayList<Agendamento> selectAll() {
@@ -121,7 +152,7 @@ public class AgendamentoDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-            ex.printStackTrace();
+                ex.printStackTrace();
 
             }
 
@@ -149,9 +180,9 @@ public class AgendamentoDao {
                 agendamentos.add(agendamento);
             }
         } catch (SQLException ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         } finally {
-           
+
         }
         return agendamentos;
     }
@@ -169,14 +200,14 @@ public class AgendamentoDao {
             conexao.commit();
 
         } catch (SQLException ex) {
-                        ex.printStackTrace();
+            ex.printStackTrace();
 
         } finally {
             try {
                 estadoPreparado.close();
                 conexao.close();
             } catch (SQLException ex) {
-            ex.printStackTrace();
+                ex.printStackTrace();
             }
 
         }
@@ -193,7 +224,7 @@ public class AgendamentoDao {
             estadoPreparado = conexao.prepareStatement(sql);
             estadoPreparado.setInt(1, idAgendamentoConvertido);
             ResultSet retorno = estadoPreparado.executeQuery();
-            
+
             if (retorno.next() == true) {
 
                 return true;
@@ -206,7 +237,7 @@ public class AgendamentoDao {
                 conexao.close();
 
             } catch (SQLException ex) {
-            ex.printStackTrace();
+                ex.printStackTrace();
 
             }
 
@@ -221,10 +252,10 @@ public class AgendamentoDao {
         PreparedStatement estadoPreparado = conn.prepareStatement(sql);
         ResultSet rs = estadoPreparado.executeQuery();
         ArrayList<Agendamento> agendamentos = new ArrayList();
-        while (rs.next()) {            
+        while (rs.next()) {
             int idClienteBanco = rs.getInt("idCliente");
             for (int i = 0; i < idsClientes.length; i++) {
-                if(idsClientes[i] == idClienteBanco){
+                if (idsClientes[i] == idClienteBanco) {
                     Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
                     agendamentos.add(agendamento);
                 }
@@ -232,23 +263,26 @@ public class AgendamentoDao {
         }
         return agendamentos;
     }
+
     //variáveis, métodos, objetos, tipos de dados primitivos
     public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome) throws SQLException {
         String sql = "SELECT ag.*, cl.nome FROM Agendamento ag INNER JOIN Cliente cl ON ag.idCliente = cl.id WHERE ag.data = ? and cl.nome LIKE ? ";//INNER JOIN -> junção interna de tabelas
         Connection conn = new Conexao().getConnection();
         PreparedStatement estadoPreparado = conn.prepareStatement(sql);
         estadoPreparado.setDate(1, data);
-        estadoPreparado.setString(2, nome+"%");
+        estadoPreparado.setString(2, nome + "%");
         ResultSet rs = estadoPreparado.executeQuery();
-        
+
         ArrayList<Agendamento> agendamentos = new ArrayList<>();
-        
-        while(rs.next() == true){
+
+        while (rs.next() == true) {
             Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
             agendamentos.add(agendamento);
         }
         return agendamentos;
-        
+
     }
+
+    
 
 }

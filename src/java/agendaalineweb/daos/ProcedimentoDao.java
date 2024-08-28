@@ -6,16 +6,12 @@
 package agendaalineweb.daos;
 
 import agendaalineweb.conect.Conexao;
-import agendaalineweb.entities.Cliente;
 import agendaalineweb.entities.Procedimento;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,7 +19,7 @@ import javax.swing.JOptionPane;
  */
 public class ProcedimentoDao {
 
-    public static ArrayList<Procedimento> selectByNome(String pesquisar) {
+    public ArrayList<Procedimento> selectByNome(String pesquisar) {
         String sql = "select * from procedimento where nome like ? ";// like (como alguma coisa / "comparacao")
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
@@ -35,7 +31,7 @@ public class ProcedimentoDao {
             ResultSet retorno = estadoPreparado.executeQuery();
             procedimentos = new ArrayList();
             while (retorno.next() == true) {
-                Procedimento procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"));
+                Procedimento procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"), retorno.getInt("idUsuario"));
                 procedimentos.add(procedimento);
             }
         } catch (SQLException ex) {
@@ -125,7 +121,7 @@ public class ProcedimentoDao {
             procedimentos = new ArrayList();
             while (retorno.next() == true) {
                 
-                Procedimento procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"));
+                Procedimento procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"), retorno.getInt("idUsuario"));
                 procedimentos.add(procedimento);
             }
         } catch (SQLException ex) {
@@ -178,7 +174,7 @@ public class ProcedimentoDao {
             ResultSet retorno = estadoPreparado.executeQuery();
 
             if (retorno.next() == true) {
-                procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"));
+                procedimento = new Procedimento(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("duracao"), retorno.getDouble("valor"), retorno.getInt("idUsuario"));
                 return procedimento;
 
             }

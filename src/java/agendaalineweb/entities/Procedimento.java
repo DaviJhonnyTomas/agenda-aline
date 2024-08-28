@@ -12,16 +12,27 @@ package agendaalineweb.entities;
 public class Procedimento {
 
     private int id;
-    String nome;
-    String duracao;
-    double valor;
+    private String nome;
+    private String duracao;
+    private double valor;
+    private int idUsuario;
 
-    public Procedimento(int id, String nome, String duracao, double valor) {
+    public Procedimento(int id, String nome, String duracao, double valor, int idUsuario) {
         this.id = id;
         this.nome = nome;
         this.duracao = duracao;
         this.valor = valor;
+        this.idUsuario = idUsuario;
     }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    
 
     public int getId() {
         return id;

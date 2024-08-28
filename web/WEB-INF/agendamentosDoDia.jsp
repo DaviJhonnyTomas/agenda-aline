@@ -14,6 +14,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Agenda-Aline</title>
 
+                <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
               integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -52,6 +54,20 @@
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
+                        <li class="nav-item li-nav">
+                        <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                    </li>
+                    <div class="dropdown">
+                        <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="ph ph-user-check"></i>
+                        </button>
+                        
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Configurações</a>
+                            <a class="dropdown-item" href="#">Sair</a>
+                        </div>
+                    </div>
                     </ul>
 
 

@@ -145,13 +145,13 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="">
+                                            <form action="${caminhoContexto}/filtrar-cliente" method="GET">
 
-                                                <input id="input-filtrar" class="form-control" type="text"
+                                                <input name="cliente" id="input-filtrar" class="form-control" type="text"
                                                        placeholder="Digite o nome do cliente">
                                                 <div class="modal-footer d-flex justify-content-center">
 
-                                                    <button id="btn-filtrar" type="button" class="btn">Filtrar pelo
+                                                    <button id="btn-filtrar" type="submit" class="btn">Filtrar pelo
                                                         nome</button>
                                                 </div>
 

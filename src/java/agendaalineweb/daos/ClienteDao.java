@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ClienteDao {
 
     public void insert(Cliente cliente) {
-        String sql = "insert into cliente ( nome, telefone, email ) values(?, ?, ?)";
+        String sql = "insert into cliente ( nome, telefone, email, idNegocio ) values(?, ?, ?, ?)";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         try {
@@ -30,6 +30,7 @@ public class ClienteDao {
             estadoPreparado.setString(1, cliente.getNome());
             estadoPreparado.setString(2, cliente.getTelefone());
             estadoPreparado.setString(3, cliente.getEmail());
+            estadoPreparado.setInt(4, cliente.getIdNegocio());
             estadoPreparado.execute();
             conexao.commit();
 
@@ -91,7 +92,7 @@ public class ClienteDao {
             clientes = new ArrayList();
             while (retorno.next() == true) {
                 int id = retorno.getInt("id");
-                Cliente cliente = new Cliente(id, retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"));
+                Cliente cliente = new Cliente(id, retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"), retorno.getInt("idNegocio"));
                 clientes.add(cliente);
             }
         } catch (SQLException ex) {
@@ -172,7 +173,7 @@ public class ClienteDao {
             ResultSet retorno = estadoPreparado.executeQuery();
             clientes = new ArrayList();
             while (retorno.next() == true) {
-                Cliente cliente = new Cliente(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"));
+                Cliente cliente = new Cliente(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"), retorno.getInt("idNegocio"));
                 clientes.add(cliente);
             }
         } catch (SQLException ex) {
@@ -203,7 +204,7 @@ public class ClienteDao {
             ResultSet retorno = estadoPreparado.executeQuery();
 
             if (retorno.next() == true) {
-                cliente = new Cliente(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"));
+                cliente = new Cliente(retorno.getInt("id"), retorno.getString("nome"), retorno.getString("telefone"), retorno.getString("email"), retorno.getInt("idNegocio"));
                 return cliente;
 
             }

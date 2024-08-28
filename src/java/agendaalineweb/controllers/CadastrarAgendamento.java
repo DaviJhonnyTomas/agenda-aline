@@ -37,33 +37,17 @@ public class CadastrarAgendamento extends HttpServlet {
             throws ServletException, IOException {
         AgendamentoModel agendamentoModel = new AgendamentoModel();
         ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
-        int[] idsProcedimentos = new int[agendamentos.size()];
-        int[] idsClientes = new int[agendamentos.size()];
-        for (int i = 0; i < agendamentos.size(); i++) {
-            idsProcedimentos[i] = agendamentos.get(i).getIdProcedimento();
-            idsClientes[i] = agendamentos.get(i).getIdCliente();
-        }
-        ArrayList<Procedimento> procedimentosAg;
-        ArrayList<Cliente> clientesAg;
-        try {
-            ProcedimentoModel modelProcedimento = new ProcedimentoModel();
-            procedimentosAg = modelProcedimento.getProcedimentosByIds(idsProcedimentos);
-            ClienteModel modelCliente = new ClienteModel();
-            clientesAg = modelCliente.getClientesByIds(idsClientes);
-            request.setAttribute("clientesAg", clientesAg);
-            request.setAttribute("procedimentosAg", procedimentosAg);
-            String caminhoContexto = request.getContextPath();
-            request.setAttribute("caminhoContexto", caminhoContexto);
-            request.setAttribute("agendamentos", agendamentos);
-            ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll();
-            request.setAttribute("procedimentos", procedimentos);
-            ArrayList<Cliente> clientes = modelCliente.selectAll();
-            request.setAttribute("clientes", clientes);
-            
-            request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(CadastrarAgendamento.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        ProcedimentoModel modelProcedimento = new ProcedimentoModel();
+        ClienteModel modelCliente = new ClienteModel();
+        String caminhoContexto = request.getContextPath();
+        request.setAttribute("caminhoContexto", caminhoContexto);
+        request.setAttribute("agendamentos", agendamentos);
+        ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll();
+        request.setAttribute("procedimentos", procedimentos);
+        ArrayList<Cliente> clientes = modelCliente.selectAll();
+        request.setAttribute("clientes", clientes);
+        request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
     }
 
     

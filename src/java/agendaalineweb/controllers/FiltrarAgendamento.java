@@ -87,30 +87,10 @@ public class FiltrarAgendamento extends HttpServlet {
         request.setAttribute("agendamentos", agendamentos);
         String caminhoContexto = request.getContextPath();
         request.setAttribute("caminhoContexto", caminhoContexto);
-        try {
-    // Código que pode lançar WaspException ou NullPointerException
+        
+    
             request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
 
-} catch (Exception e) {
-    Throwable cause = e.getCause();
-    if (cause instanceof NullPointerException) {
-        // Tratamento específico para NullPointerException dentro de WaspException
-        System.out.println("Causa raiz é NullPointerException: " + cause.getMessage());
-        // Pode adicionar mais tratamento aqui, como logging ou recuperação de falhas
-    } else {
-        // Tratamento específico para WaspException sem NullPointerException como causa raiz
-        System.out.println("WaspException capturada: " + e.getMessage());
-        // Pode adicionar mais tratamento aqui, como logging ou recuperação de falhas
-    }
-} catch (NullPointerException e) {
-    // Tratamento específico para NullPointerException não encapsulada
-    System.out.println("NullPointerException capturada: " + e.getMessage());
-    // Pode adicionar mais tratamento aqui, como logging ou recuperação de falhas
-} catch (Exception e) {
-    // Tratamento para outras exceções
-    System.out.println("Outra exceção capturada: " + e.getMessage());
-    // Pode adicionar mais tratamento aqui, como logging ou recuperação de falhas
-}
         
     }
 
