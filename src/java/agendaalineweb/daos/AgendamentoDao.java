@@ -13,6 +13,8 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -25,58 +27,74 @@ import java.util.ArrayList;
  */
 public class AgendamentoDao {
 
-    public void insert(Agendamento agendamento, int[] idProcedimentos) {
-        String sql = "insert into agendamento (hora, data, idCliente, idUsuario ) values(?, ?, ?, ?) ";
-        Connection conexao = null;
-        PreparedStatement estadoPreparado = null;
-        int id = 0;
-        try {
-            conexao = new Conexao().getConnection();
-            conexao.setAutoCommit(false);
-            estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    public void insert(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {
+    String sql = "INSERT INTO agendamento (hora, data, idCliente, idUsuario) VALUES (?, ?, ?, ?)";
+    Connection conexao = null;
+    PreparedStatement estadoPreparado = null;
+    int id = 0;
+    try {
+        conexao = new Conexao().getConnection();
+        conexao.setAutoCommit(false);
+        estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            Time horaConvertida = Time.valueOf(agendamento.getHora());
-            estadoPreparado.setTime(1, horaConvertida);
-            Date dataConvertida = Date.valueOf(agendamento.getData());
-            estadoPreparado.setDate(2, dataConvertida);
-            estadoPreparado.setInt(3, agendamento.getIdCliente());
-            estadoPreparado.setInt(4, agendamento.getIdUsuario());
-            ResultSet rs = estadoPreparado.executeQuery();
-            id = rs.getInt(1);
-            
-            for (int i = 0; i < idProcedimentos.length; i++) {
-                Agendamento_Procedimento pa = new Agendamento_Procedimento(idProcedimentos[i], id);
-                insertProcedimentoAgendamento(pa);
+        Time horaConvertida = Time.valueOf(agendamento.getHora());
+        estadoPreparado.setTime(1, horaConvertida);
+        Date dataConvertida = Date.valueOf(agendamento.getData());
+        estadoPreparado.setDate(2, dataConvertida);
+        estadoPreparado.setInt(3, agendamento.getIdCliente());
+        estadoPreparado.setInt(4, agendamento.getIdUsuario());
+        estadoPreparado.executeUpdate();
+
+        // Recupera as chaves geradas
+        try (ResultSet rs = estadoPreparado.getGeneratedKeys()) {
+            if (rs.next()) {
+                id = rs.getInt(1); // Obtém o ID gerado
             }
-            
-            conexao.commit();
+        }
+
+        // Vincular procedimento ao agendamento cadastrado
+        insertProcedimentos(idsProcedimentos, id);
+
+        conexao.commit();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        if (conexao != null) {
+            try {
+                conexao.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        }
+    } finally {
+        try {
+            if (estadoPreparado != null) estadoPreparado.close();
+            if (conexao != null) conexao.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-
-        } finally {
-            try {
-                estadoPreparado.close();
-                conexao.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-
-            }
-
         }
-       
-
     }
+}
 
-    public void insertProcedimentoAgendamento(Agendamento_Procedimento pa) throws SQLException {
-        String sql = "insert into Procedimento_Agendamento (idProcedimento, idAgendamento) values (?,?)";
-        Connection conn = new Conexao().getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, pa.getIdProcedimento());
-        ps.setInt(2, pa.getIdAgendamento());
-        ps.execute();
-        ps.close();
-        conn.close();
+private void insertProcedimentos(ArrayList<Integer> idsProcedimentos, int idAgendamento) {
+    String sql = "INSERT INTO Agendamento_Procedimento (idProcedimento, idAgendamento) VALUES (?, ?)";
+    try (Connection conn = new Conexao().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        conn.setAutoCommit(false);
+
+        for (int idProcedimento : idsProcedimentos) {
+            ps.setInt(1, idProcedimento);
+            ps.setInt(2, idAgendamento);
+            ps.addBatch();
+        }
+
+        ps.executeBatch();
+        conn.commit();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        // Conexão é fechada automaticamente pelo try-with-resources
     }
+}
+
 
     public void updateById(Agendamento agendamento, int[] idProcedimentos) {//recebe da Model.
         String sql = "update agendamento set hora = ?, data = ?, idCliente = ?, idUsuario = ? where id = ? ";
@@ -94,7 +112,7 @@ public class AgendamentoDao {
             estadoPreparado.setInt(4, agendamento.getIdUsuario());
             estadoPreparado.setInt(5, agendamento.getId());// where ID ?.
             estadoPreparado.execute();
-            
+
             // 1
             //Jhonata
             //unhas2 = 2, unhas3 = 3
@@ -104,11 +122,11 @@ public class AgendamentoDao {
                     updateProcedimentoAgendamento(pa);
                 }
             }
-            
+
             conexao.commit();
 
         } catch (SQLException ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         } finally {
             try {
                 estadoPreparado.close();
@@ -121,6 +139,7 @@ public class AgendamentoDao {
         }
 
     }
+
     public void updateProcedimentoAgendamento(Agendamento_Procedimento pa) {
         String sql = "update Agendamento_Procedimento set idProcedimento = ? where id = ?";
     }
@@ -141,7 +160,7 @@ public class AgendamentoDao {
                 LocalTime horaConvertida = hora.toLocalTime();
                 Date data = retorno.getDate("data");
                 LocalDate dataConvertida = data.toLocalDate();
-                Agendamento agendamento = new Agendamento(retorno.getInt("id"), retorno.getInt("idProcedimento"), horaConvertida, dataConvertida, retorno.getInt("idCliente"));
+                Agendamento agendamento = new Agendamento(retorno.getInt("id"), horaConvertida, dataConvertida, retorno.getInt("idCliente"), retorno.getInt("idUsuario"));
                 agendamentos.add(agendamento);
             }
         } catch (SQLException ex) {
@@ -176,7 +195,7 @@ public class AgendamentoDao {
                 LocalTime horaConvertida = hora.toLocalTime();
                 Date data = retorno.getDate("data");
                 LocalDate dataConvertida = data.toLocalDate();
-                Agendamento agendamento = new Agendamento(retorno.getInt("id"), retorno.getInt("idProcedimento"), horaConvertida, dataConvertida, retorno.getInt("idCliente"));
+                Agendamento agendamento = new Agendamento(retorno.getInt("id"), horaConvertida, dataConvertida, retorno.getInt("idCliente"), retorno.getInt("idUsuario"));
                 agendamentos.add(agendamento);
             }
         } catch (SQLException ex) {
@@ -256,8 +275,8 @@ public class AgendamentoDao {
             int idClienteBanco = rs.getInt("idCliente");
             for (int i = 0; i < idsClientes.length; i++) {
                 if (idsClientes[i] == idClienteBanco) {
-                    Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
-                    agendamentos.add(agendamento);
+                    //Agendamento agendamento = new Agendamento(rs.getInt("id"), horaConvertida, dataConvertida, retorno.getInt("idCliente"), retorno.getInt("idUsuario"));
+                    //agendamentos.add(agendamento);
                 }
             }
         }
@@ -282,7 +301,5 @@ public class AgendamentoDao {
         return agendamentos;
 
     }
-
-    
 
 }

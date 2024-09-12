@@ -19,7 +19,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,32 +37,21 @@ public class ListagemAgendamentosDoDia extends HttpServlet {
 
         if (usuario != null) {
             AgendamentoModel agendamentoModel = new AgendamentoModel();
-            ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-            java.util.Date date = new java.util.Date();
-            java.sql.Date datesql = new java.sql.Date(date.getTime());
-            ArrayList<Agendamento> agendamentos = agendamentoModel.selectByData(datesql);
-            int[] idsProcedimentos = new int[agendamentos.size()];
-            int[] idsClientes = new int[agendamentos.size()];
-            for (int i = 0; i < agendamentos.size(); i++) {
-                idsProcedimentos[i] = agendamentos.get(i).getIdProcedimento();
-                idsClientes[i] = agendamentos.get(i).getIdCliente();
-            }
-            ArrayList<Procedimento> procedimentos;
-            ArrayList<Cliente> clientes;
-            try {
-                procedimentos = procedimentoModel.getProcedimentosByIds(idsProcedimentos);
-                ClienteModel modelCliente = new ClienteModel();
-                clientes = modelCliente.getClientesByIds(idsClientes);
-                request.setAttribute("clientes", clientes);
-                request.setAttribute("agendamentos", agendamentos);
-                request.setAttribute("procedimentos", procedimentos);
-                String caminhoContexto = request.getContextPath();
-                request.setAttribute("caminhoContexto", caminhoContexto);
-                request.getRequestDispatcher("WEB-INF/agendamentosDoDia.jsp").forward(request, response);
-            } catch (SQLException ex) {
-                Logger.getLogger(ListagemAgendamentosDoDia.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }else{
+            ArrayList<Agendamento> agendamentos = agendamentoModel.selectByData(Date.valueOf(LocalDate.now()));
+
+            ProcedimentoModel modelProcedimento = new ProcedimentoModel();
+            ClienteModel modelCliente = new ClienteModel();
+            String caminhoContexto = request.getContextPath();
+            request.setAttribute("caminhoContexto", caminhoContexto);
+            request.setAttribute("agendamentos", agendamentos);
+            ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll();
+            request.setAttribute("procedimentos", procedimentos);
+            ArrayList<Cliente> clientes = modelCliente.selectAll();
+            request.setAttribute("clientes", clientes);
+
+            request.getRequestDispatcher("WEB-INF/agendamentosDoDia.jsp").forward(request, response);
+
+        } else {
             response.sendRedirect("login");
         }
 

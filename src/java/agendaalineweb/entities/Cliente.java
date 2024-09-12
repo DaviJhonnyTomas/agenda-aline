@@ -74,12 +74,7 @@ public class Cliente {
         this.email = email;
     }
 
-    public Cliente(String nome, String telefone, String email) {
-
-        this.nome = nome;
-        this.telefone = telefone;
-        this.email = email;
-    }
+  
 
     @Override // Anotacao de sobre escrita.
     public String toString() {

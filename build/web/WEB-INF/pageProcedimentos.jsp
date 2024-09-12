@@ -43,31 +43,49 @@
                 width: 28.6%;
                 text-align: center;
             }
+            .item-procedimento{
+                
+            }
         </style>
     </head>
 
     <body class="d-flex flex-column">
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
+
                 <a class="navbar-brand " href="${caminhoContexto}/listagem-agendamentos-dia">
-                    <img src="imgs/img-aline-simao.jpg " alt="logotipo do site Aline Simão" id="img-logo">
+                    <img src="./imgs/img-aline-simao.jpg " alt="logotipo do site Aline Simão" id="img-logo">
                 </a>
                 <!-- <button style="color: black;" class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                colocar a classe collapse e o navbar-collapse na div abaixo-->
+                     data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+                     <span class="navbar-toggler-icon"></span>
+                 </button>
+                 colocar a classe collapse e o navbar-collapse na div abaixo-->
                 <div class="  " id="navbarNav">
                     <ul class="navbar-nav d-flex justify-content-around">
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
+                        <li class="nav-item li-nav">
+                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                        </li>
+                        <div class="dropdown">
+                            <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ph ph-user-check"></i>
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Configurações</a>
+                                <a class="dropdown-item" href="#">Sair</a>
+                            </div>
+                        </div>
                     </ul>
 
 

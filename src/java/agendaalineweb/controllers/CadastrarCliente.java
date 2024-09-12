@@ -5,6 +5,7 @@
 package agendaalineweb.controllers;
 
 import agendaalineweb.entities.Cliente;
+import agendaalineweb.entities.Usuario;
 import agendaalineweb.models.ClienteModel;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,8 +14,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
-
+ 
 /**
  *
  * @author Utilizador
@@ -49,7 +51,16 @@ public class CadastrarCliente extends HttpServlet {
         String nome = request.getParameter("nome");
         String telefone = request.getParameter("telefone");
         String email = request.getParameter("email");
-        Cliente cliente = new Cliente(nome, telefone, email);
+      
+        
+        
+        HttpSession sessao = request.getSession();
+        Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
+        
+        int idNegocio = usuario.getIdNegocio();
+          
+        Cliente cliente = new Cliente(nome, telefone, email, idNegocio);
+        
         ClienteModel clienteModel = new ClienteModel();
         clienteModel.insert(cliente);
         response.sendRedirect("cadastrar-cliente");

@@ -6,6 +6,14 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="agendaalineweb.models.ClienteModel"%>
+<%@ page import="agendaalineweb.entities.Cliente"%>
+<%@ page import="agendaalineweb.models.ProcedimentoModel"%>
+<%@ page import="agendaalineweb.models.Agendamento_ProcedimentoModel"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="agendaalineweb.entities.Procedimento"%>
+<%@ page import="agendaalineweb.entities.Agendamento"%>
+<%@ page import="agendaalineweb.models.DataModel"%>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -14,7 +22,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Agenda-Aline</title>
 
-                <script src="https://unpkg.com/@phosphor-icons/web"></script>
+        <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
               integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -29,12 +37,28 @@
         crossorigin="anonymous"></script>
 
         <link rel="stylesheet" href="css/style.css">
+
+        <style>
+            #container-main {
+                /* "../" serve para sair de uma pasta atual*/
+                background: url(./imgs/img-fundo.jpg);
+                background-attachment: fixed;
+                background-size: cover;
+                height: 100%;
+            }
+
+            #container-conteudo {
+                height: 100%;
+            }
+
+
+        </style>
     </head>
 
     <body class="d-flex flex-column">
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
-                
+
                 <a class="navbar-brand " href="${caminhoContexto}/listagem-agendamentos-dia">
                     <img src="./imgs/img-aline-simao.jpg " alt="logotipo do site Aline Simão" id="img-logo">
                 </a>
@@ -55,19 +79,19 @@
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
                         <li class="nav-item li-nav">
-                        <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
-                    </li>
-                    <div class="dropdown">
-                        <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="ph ph-user-check"></i>
-                        </button>
-                        
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Configurações</a>
-                            <a class="dropdown-item" href="#">Sair</a>
+                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                        </li>
+                        <div class="dropdown">
+                            <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ph ph-user-check"></i>
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Configurações</a>
+                                <a class="dropdown-item" href="#">Sair</a>
+                            </div>
                         </div>
-                    </div>
                     </ul>
 
 
@@ -81,15 +105,49 @@
                     <h2 id="titulo">Agendamentos do dia</h2>
                     <ul>
                         <c:forEach varStatus="status" var="agendamento" items="${agendamentos}">
-                        <li>
-                            <div class="item-list-agendamento d-flex justify-content-between">
-                                <span class="subitem-agendamento">${clientes[status.index].nome}</span>
-                                <span class="subitem-agendamento">${agendamento.data}</span>
-                                <span class="subitem-agendamento">${agendamento.hora}</span>
-                                <span class="subitem-agendamento">${procedimentos[status.index].nome}</span>
-                                <span class="subitem-agendamento">€ ${procedimentos[status.index].valor}</span>
-                            </div>
-                        </li>
+                            <li>
+                                <div class="item-list-agendamento d-flex justify-content-between">
+                                    <span class="subitem-agendamento">
+                                        <% 
+                                                        Agendamento agendamento = (Agendamento) pageContext.getAttribute("agendamento");
+                                                        ClienteModel clienteModel = new ClienteModel();
+                                                        Cliente cliente = clienteModel.selectById(agendamento.getIdCliente());
+                                                        pageContext.setAttribute("cliente", cliente);
+                                        %>
+
+                                        ${cliente.nome}
+                                    </span>
+                                    <span class="subitem-agendamento">${agendamento.data}</span>
+                                    <span class="subitem-agendamento">${agendamento.hora}</span>
+                                    <span class="subitem-agendamento">
+                                        <% 
+                                                    
+                                                    Agendamento_ProcedimentoModel agProcedimentoModel = new Agendamento_ProcedimentoModel();
+                                                    ArrayList<Procedimento> procedimentos = agProcedimentoModel.getProcedimentosByIdAgendamento(agendamento.getId());
+                                                    pageContext.setAttribute("procedimentos", procedimentos);
+                                        %>
+                                        <ul>
+
+                                            <c:forEach var="procedimento" items="${procedimentos}">
+                                                <li>${procedimento.nome}</li>
+
+
+                                            </c:forEach>
+
+                                        </ul>
+
+
+                                    </span>
+                                    <%
+                                        double somaValoresProcedimentos = 0;
+                                        for(Procedimento procedimento : procedimentos){
+                                           somaValoresProcedimentos = somaValoresProcedimentos + procedimento.getValor();
+                                        }
+                                        pageContext.setAttribute("somaValoresProcedimentos", somaValoresProcedimentos);
+                                    %>     
+                                    <span class="subitem-agendamento">€ ${somaValoresProcedimentos}</span>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>

@@ -3,20 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageCliente.jsp</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Procedimento.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageAgendamentos.jsp</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/daos/AgendamentoDao.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Agendamento.java</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/CadastrarAgendamento.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/AgendamentoModel.java</file>
+            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/daos/Agendamento_ProcedimentoDao.java</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/controllers/AcessarLogin.java</file>
             <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Agendamento_Procedimento.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Negocio.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Agendamento.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/UsuarioDao.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Cliente.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Estilo.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/entities/Usuario.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/src/java/agendaalineweb/models/UsuarioModel.java</file>
-            <file>file:/C:/Users/Utilizador/Documents/NetBeansProjects/AgendaAlineWeb/web/WEB-INF/pageLogin.jsp</file>
         </group>
     </open-files>
 </project-private>

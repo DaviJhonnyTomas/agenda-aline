@@ -12,6 +12,8 @@
 <%@ page import="agendaalineweb.entities.Procedimento"%>
 <%@ page import="agendaalineweb.entities.Agendamento"%>
 <%@ page import="agendaalineweb.models.DataModel"%>
+<%@ page import="agendaalineweb.models.Agendamento_ProcedimentoModel"%>
+<%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -39,31 +41,76 @@
                 max-width: 89%;
                 margin-right: 1%;
             }
+            #dropdownButtonProcedimentos{
+                width: 100%;
+                text-align: start;
+                background-color: #DEBDC6;
+                border-radius: 10px;
+                border: 3px solid #B7044A;
+                color: #555;
+            }
+            #dropdownButtonProcedimentos::after{
+                margin-left: 765px;
+                color: black;
+            }
+            #dropdownMenuProcedimentos{
+                width: 100%;
+            }
+            .item-procedimento{
+               margin-left: 10px;
+            }
+            #seletor-procedimento{
+                width: 100%;
+                border-radius: 10px;
+                border: #B7044A solid 3px;
+                background-color: #DEBDC6;
+            }
         </style>
     </head>
 
     <body class="d-flex flex-column">
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
+
                 <a class="navbar-brand " href="${caminhoContexto}/listagem-agendamentos-dia">
-                    <img src="imgs/img-aline-simao.jpg " alt="logotipo do site Aline Simão" id="img-logo">
+                    <img src="./imgs/img-aline-simao.jpg " alt="logotipo do site Aline Simão" id="img-logo">
                 </a>
                 <!-- <button style="color: black;" class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                colocar a classe collapse e o navbar-collapse na div abaixo-->
+                     data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+                     <span class="navbar-toggler-icon"></span>
+                 </button>
+                 colocar a classe collapse e o navbar-collapse na div abaixo-->
                 <div class="  " id="navbarNav">
                     <ul class="navbar-nav d-flex justify-content-around">
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
+                        <li class="nav-item li-nav">
+                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                        </li>
+                        <div class="dropdown">
+                            <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ph ph-user-check"></i>
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                <div class="form-check">
+
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
                     </ul>
 
 
@@ -86,14 +133,29 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="input-group mb-3">
-                            <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
-                                <option value="0" selected>Escolher Procedimento</option>
-                                <c:forEach var="procedimento" items="${procedimentos}">
-                                    <option value="${procedimento.id}">${procedimento.nome}</option>
+
+                        <div class="input-group mb-3 form-group" >
+                            <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentos"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Selecione os procedimentos
+                            </button>
+
+
+                            <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
+                                <c:forEach var="procedimento" items="${procedimentos}" varStatus="i">
+                                    <div class="item-procedimento">
+                                        <input type="checkbox" value="${procedimento.id}" name="idProcedimento${i.index}" id="defaultCheck1">
+                                        ${procedimento.nome}
+                                    </div>                                   
+
                                 </c:forEach>
-                            </select>
+
+
+                            </div>
+
+
                         </div>
+           
                         <div class="form-group ">
                             <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data">
 
@@ -193,12 +255,19 @@
                                             <td class="td-table">
                                                 <% 
                                                     
-                                                    ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-                                                    Procedimento procedimento = procedimentoModel.selectById(agendamento.getIdProcedimento());
-                                                    pageContext.setAttribute("procedimento", procedimento);
+                                                   Agendamento_ProcedimentoModel agProcedimentoModel = new Agendamento_ProcedimentoModel();
+                                                   ArrayList<Procedimento> procedimentos = agProcedimentoModel.getProcedimentosByIdAgendamento(agendamento.getId());
+                                                   pageContext.setAttribute("procedimentos", procedimentos);
                                                 %>
+                                                <ul>
 
-                                                ${procedimento.nome}
+                                                    <c:forEach var="procedimento" items="${procedimentos}">
+                                                        <li>${procedimento.nome}</li>
+
+
+                                                    </c:forEach>
+
+                                                </ul>
                                             </td>
                                             <td class="td-table">
                                                 <%
@@ -212,7 +281,7 @@
                                                 ${agendamento.hora}
                                             </td>
                                             <td id="tb-funcoes">
-                                                <a href="${caminhoContexto}/editar-agendamento?id=${agendamento.id}&idCliente=${agendamento.idCliente}&idProcedimento=${agendamento.idProcedimento}&data=${agendamento.data}&hora=${agendamento.hora}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
+                                                <a href="${caminhoContexto}/editar-agendamento?id=${agendamento.id}&idCliente=${agendamento.idCliente}&data=${agendamento.data}&hora=${agendamento.hora}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
                                                 <form action="excluir-agendamento" method="post">
                                                     <input name="id" value="${agendamento.id}" hidden="true">
                                                     <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>
@@ -309,9 +378,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                        <%
-                                    String modalParamErro = (String) request.getAttribute("modalErro");
-                                    if (modalParamErro != null) {
+                                <%
+                            String modalParamErro = (String) request.getAttribute("modalErro");
+                            if (modalParamErro != null) {
                                 %>
                                 <script>
 
@@ -323,7 +392,7 @@
                                     }
                                 %>
                             </div>
-                                        
+
                         </div>
                     </div>
                 </div>

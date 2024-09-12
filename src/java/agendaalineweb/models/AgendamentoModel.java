@@ -21,9 +21,9 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AgendamentoModel {
 
-    public void insert(Agendamento agendamento) {//recebe da interface um cliente(AgendaAline.java).
+    public void insert(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {//recebe da interface um cliente(AgendaAline.java).
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        daoAgendamento.insert(agendamento);//chamada do metodo insert da DAO.
+        daoAgendamento.insert(agendamento, idsProcedimentos);//chamada do metodo insert da DAO.
 
     }
 
