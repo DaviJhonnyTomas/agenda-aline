@@ -33,8 +33,8 @@ public class EditarAgendamento extends HttpServlet {
         String data = request.getParameter("data");
         String hora = request.getParameter("hora");
 
-        Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), Integer.parseInt(idProcedimento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
-        request.setAttribute("agendamento", agendamento);
+        //Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), Integer.parseInt(idProcedimento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
+        //request.setAttribute("agendamento", agendamento);
         request.setAttribute("modal", "modalEditarAgendamento");
 
         AgendamentoModel agendamentoModel = new AgendamentoModel();
@@ -66,9 +66,9 @@ public class EditarAgendamento extends HttpServlet {
         String idProcedimento = request.getParameter("idProcedimento");
         String data = request.getParameter("data");
         String hora = request.getParameter("hora");
-        Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), Integer.parseInt(idProcedimento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
+        //Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), Integer.parseInt(idProcedimento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
         AgendamentoModel agendamentoModel = new AgendamentoModel();
-        agendamentoModel.updateById(agendamento);// Agendamento ja editado
+        //agendamentoModel.updateById(agendamento);// Agendamento ja editado
         String caminhoContexto = request.getContextPath();
         response.sendRedirect(caminhoContexto + "/cadastrar-agendamento");// Retorno para a pagina de cadastro(tabela visualizacao agendamentos)
 

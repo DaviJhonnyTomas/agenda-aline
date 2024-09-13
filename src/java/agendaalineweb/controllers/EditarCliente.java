@@ -30,8 +30,8 @@ public class EditarCliente extends HttpServlet {
         String email = request.getParameter("email");
         String telefone = request.getParameter("telefone");
         
-        Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
-        request.setAttribute("cliente", cliente);
+        //Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
+        //request.setAttribute("cliente", cliente);
         request.setAttribute("modal", "modalEditarCliente");
         
         ClienteModel clienteModel = new ClienteModel();
@@ -52,9 +52,9 @@ public class EditarCliente extends HttpServlet {
         String nome = request.getParameter("nome");
         String telefone = request.getParameter("telefone");
         String email = request.getParameter("email");
-        Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
+        //Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
         ClienteModel clienteModel = new ClienteModel();
-        clienteModel.updateById(cliente);// CLiente ja editado
+       // clienteModel.updateById(cliente);// CLiente ja editado
         String caminhoContexto = request.getContextPath();
         response.sendRedirect(caminhoContexto + "/cadastrar-cliente");// Retorno para a pagina de cadastro(tabela vbisuaçizacao clientes)
         

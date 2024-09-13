@@ -29,7 +29,7 @@ public class AgendamentoModel {
 
     public void updateById(Agendamento agendamento) {//recebemos da interface(AgendaAline.java).
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        daoAgendamento.updateById(agendamento);//chamada do metodo updateById da DAO.
+        //daoAgendamento.updateById(agendamento);//chamada do metodo updateById da DAO.
 
     }
 

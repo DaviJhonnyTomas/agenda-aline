@@ -13,6 +13,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,73 +29,91 @@ import java.util.logging.Logger;
 public class AgendamentoDao {
 
     public void insert(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {
-    String sql = "INSERT INTO agendamento (hora, data, idCliente, idUsuario) VALUES (?, ?, ?, ?)";
-    Connection conexao = null;
-    PreparedStatement estadoPreparado = null;
-    int id = 0;
-    try {
-        conexao = new Conexao().getConnection();
-        conexao.setAutoCommit(false);
-        estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        Time horaConvertida = Time.valueOf(agendamento.getHora());
-        estadoPreparado.setTime(1, horaConvertida);
-        Date dataConvertida = Date.valueOf(agendamento.getData());
-        estadoPreparado.setDate(2, dataConvertida);
-        estadoPreparado.setInt(3, agendamento.getIdCliente());
-        estadoPreparado.setInt(4, agendamento.getIdUsuario());
-        estadoPreparado.executeUpdate();
-
-        // Recupera as chaves geradas
-        try (ResultSet rs = estadoPreparado.getGeneratedKeys()) {
-            if (rs.next()) {
-                id = rs.getInt(1); // Obtém o ID gerado
-            }
-        }
-
-        // Vincular procedimento ao agendamento cadastrado
-        insertProcedimentos(idsProcedimentos, id);
-
-        conexao.commit();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        if (conexao != null) {
-            try {
-                conexao.rollback();
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
-            }
-        }
-    } finally {
+        String sql = "INSERT INTO agendamento (hora, data, idCliente, idUsuario) VALUES (?, ?, ?, ?)";
+        Connection conexao = null;
+        PreparedStatement estadoPreparado = null;
+        int id = 0;
         try {
-            if (estadoPreparado != null) estadoPreparado.close();
-            if (conexao != null) conexao.close();
+            conexao = new Conexao().getConnection();
+            conexao.setAutoCommit(false);
+            estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            Time horaConvertida = Time.valueOf(agendamento.getHora());
+            estadoPreparado.setTime(1, horaConvertida);
+            Date dataConvertida = Date.valueOf(agendamento.getData());
+            estadoPreparado.setDate(2, dataConvertida);
+            estadoPreparado.setInt(3, agendamento.getIdCliente());
+            estadoPreparado.setInt(4, agendamento.getIdUsuario());
+            estadoPreparado.executeUpdate();
+
+            // Recupera as chaves geradas
+            try (ResultSet rs = estadoPreparado.getGeneratedKeys()) {
+                if (rs.next()) {
+                    id = rs.getInt(1); // Obtém o ID gerado
+                }
+            }
+
+            // Vincular procedimento ao agendamento cadastrado
+            insertProcedimentos(idsProcedimentos, id);
+
+            conexao.commit();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            if (conexao != null) {
+                try {
+                    conexao.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                if (estadoPreparado != null) {
+                    estadoPreparado.close();
+                }
+                if (conexao != null) {
+                    conexao.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
-}
 
-private void insertProcedimentos(ArrayList<Integer> idsProcedimentos, int idAgendamento) {
-    String sql = "INSERT INTO Agendamento_Procedimento (idProcedimento, idAgendamento) VALUES (?, ?)";
-    try (Connection conn = new Conexao().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        conn.setAutoCommit(false);
+    private void insertProcedimentos(ArrayList<Integer> idsProcedimentos, int idAgendamento) {
+        String sql = "INSERT INTO Agendamento_Procedimento (idProcedimento, idAgendamento) VALUES (?, ?)";
+        final int MAX_RETRIES = 3;
+        int tentativa = 0;
 
-        for (int idProcedimento : idsProcedimentos) {
-            ps.setInt(1, idProcedimento);
-            ps.setInt(2, idAgendamento);
-            ps.addBatch();
+        while (tentativa < MAX_RETRIES) {
+            try (Connection conn = new Conexao().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                conn.setAutoCommit(false);
+
+                int batchSize = 100;
+                for (int i = 0; i < idsProcedimentos.size(); i += batchSize) {
+                    List<Integer> batchIds = idsProcedimentos.subList(i, Math.min(i + batchSize, idsProcedimentos.size()));
+                    // Execute a atualização em batch para a lista de IDs atual
+                    ps.executeBatch();
+                }
+                conn.commit();
+                return; // Sai do método se bem-sucedido
+
+            } catch (SQLException ex) {
+                tentativa++;
+                if (tentativa >= MAX_RETRIES) {
+                    ex.printStackTrace();
+                    break; // Sai do loop após o número máximo de tentativas
+                }
+                // Opcional: Adicione um pequeno atraso antes de tentar novamente
+                try {
+                    Thread.sleep(1000); // Atraso de 1 segundo
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
         }
-
-        ps.executeBatch();
-        conn.commit();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        // Conexão é fechada automaticamente pelo try-with-resources
     }
-}
-
 
     public void updateById(Agendamento agendamento, int[] idProcedimentos) {//recebe da Model.
         String sql = "update agendamento set hora = ?, data = ?, idCliente = ?, idUsuario = ? where id = ? ";
@@ -295,8 +314,8 @@ private void insertProcedimentos(ArrayList<Integer> idsProcedimentos, int idAgen
         ArrayList<Agendamento> agendamentos = new ArrayList<>();
 
         while (rs.next() == true) {
-            Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
-            agendamentos.add(agendamento);
+            // Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getInt("idProcedimento"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"));
+            // agendamentos.add(agendamento);
         }
         return agendamentos;
 

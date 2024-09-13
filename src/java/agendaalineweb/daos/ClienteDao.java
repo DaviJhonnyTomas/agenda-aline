@@ -238,8 +238,8 @@ public class ClienteDao {
             System.out.println("id cliente banco:" + idClienteBanco);
             for (int idClienteVetor : idsClientes) {
                 if (idClienteBanco == idClienteVetor) {
-                    Cliente cliente = new Cliente(resultado.getString("nome"), resultado.getString("telefone"), resultado.getString("email"));
-                    clientes.add(cliente);
+                    //Cliente cliente = new Cliente(resultado.getString("nome"), resultado.getString("telefone"), resultado.getString("email"));
+                   // clientes.add(cliente);
                 }
 
             }
