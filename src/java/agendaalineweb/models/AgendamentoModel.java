@@ -21,16 +21,21 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AgendamentoModel {
 
-    public void insert(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {//recebe da interface um cliente(AgendaAline.java).
+    public void insert(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) throws SQLException {//recebe da interface um cliente(AgendaAline.java).
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        daoAgendamento.insert(agendamento, idsProcedimentos);//chamada do metodo insert da DAO.
+        daoAgendamento.insertProcedimentos(agendamento, idsProcedimentos);
 
     }
 
-    public void updateById(Agendamento agendamento) {//recebemos da interface(AgendaAline.java).
+    public void updateById(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {//recebemos da interface(AgendaAline.java).
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        //daoAgendamento.updateById(agendamento);//chamada do metodo updateById da DAO.
+        daoAgendamento.updateById(agendamento, idsProcedimentos);//chamada do metodo updateById da DAO.
 
+    }
+    
+    public ArrayList<Agendamento> selectByIntervalo(LocalDate dataInicio, LocalDate dataFim){
+        AgendamentoDao daoAgendamento = new AgendamentoDao();
+        return daoAgendamento.selectByIntervalo(dataInicio, dataFim);
     }
 
     public ArrayList<Agendamento> selectAll() {//Tipo do retorno do metodo = ArrayList.

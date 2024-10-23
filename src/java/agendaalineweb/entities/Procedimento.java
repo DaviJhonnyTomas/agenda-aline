@@ -24,6 +24,12 @@ public class Procedimento {
         this.valor = valor;
         this.idUsuario = idUsuario;
     }
+    public Procedimento(int id, String nome, String duracao, double valor) {
+        this.id = id;
+        this.nome = nome;
+        this.duracao = duracao;
+        this.valor = valor;
+    }
 
     public int getIdUsuario() {
         return idUsuario;

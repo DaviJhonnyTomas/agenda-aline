@@ -7,6 +7,7 @@ package agendaalineweb.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,6 +20,15 @@ public class Agendamento {
     private LocalDate data;
     private int idCliente;
     private int idUsuario;
+    private ArrayList<Procedimento> procedimentos;
+
+    public ArrayList<Procedimento> getProcedimentos() {
+        return procedimentos;
+    }
+
+    public void setProcedimentos(ArrayList<Procedimento> procedimentos) {
+        this.procedimentos = procedimentos;
+    }
 
     public Agendamento(int id, LocalTime hora, LocalDate data, int idCliente, int idUsuario) {
         this.id = id;
@@ -27,6 +37,12 @@ public class Agendamento {
         this.idCliente = idCliente;
         this.idUsuario = idUsuario;
     }
+    public Agendamento(int id, LocalTime hora, LocalDate data, int idCliente) {
+        this.id = id;
+        this.hora = hora;
+        this.data = data;
+        this.idCliente = idCliente;
+    }
 
     public Agendamento(LocalTime hora, LocalDate data, int idCliente, int idUsuario) {
         this.hora = hora;
@@ -34,6 +50,7 @@ public class Agendamento {
         this.idCliente = idCliente;
         this.idUsuario = idUsuario;
     }
+    
 
     public int getIdUsuario() {
         return idUsuario;

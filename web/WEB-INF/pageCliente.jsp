@@ -193,7 +193,7 @@
                                                 ${cliente.email}
                                             </td>
                                             <td id="tb-funcoes">
-                                                <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}&nome=${cliente.nome}&telefone=${cliente.telefone}&email=${cliente.email}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
+                                                <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}&nome=${cliente.nome}&telefone=${cliente.telefone}&email=${cliente.email}&idNegocio=${cliente.idNegocio}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
                                                 <form action="excluir-cliente" method="post">
                                                     <input name="id" value="${cliente.id}" hidden="true">
                                                     <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>

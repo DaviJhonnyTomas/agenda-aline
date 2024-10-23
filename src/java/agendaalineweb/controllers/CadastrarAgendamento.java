@@ -82,7 +82,11 @@ public class CadastrarAgendamento extends HttpServlet {
         if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
             Agendamento agendamento = new Agendamento(LocalTime.parse(hora), dataConvertida, Integer.parseInt(idCliente),usuario.getId());
             AgendamentoModel agendamentoModel = new AgendamentoModel();
-            agendamentoModel.insert(agendamento, idsProcedimentos);
+            try {
+                agendamentoModel.insert(agendamento, idsProcedimentos);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
 
         } else {
             mensagem = "A data informada não pode ser anterior a data de hoje";

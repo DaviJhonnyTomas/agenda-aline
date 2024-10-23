@@ -124,6 +124,7 @@ body {
     border: #B7044A 3px solid;
     height: 45px;
     background-color: #DEBDC6;
+    margin: 5px 0;
 
 }
 
@@ -166,18 +167,19 @@ body {
 }
 
 .th-item {
-    background-color: #b704499a;
+   
+    color: whitesmoke;
     border: #B7044A 3px solid;
     border-radius: 5px;
-    color: whitesmoke;
-    padding: 0px 15px;
+    background-color: #b704499a;
     text-align: center;
+    
 }
 
 .container-thitem {
     width: 22%;
     text-align: center;
-}
+} /*paramos aqui, precisa ajustar o style.css para dar compatibilidade com o agendamentoSemanal*/
 
 .table {
     margin-top: 20px;
@@ -215,7 +217,7 @@ body {
 }
 
 .table {
-    margin-bottom: 100px !important;
+    margin-bottom: 150px !important;
 }
 
 #btn-close-modal {

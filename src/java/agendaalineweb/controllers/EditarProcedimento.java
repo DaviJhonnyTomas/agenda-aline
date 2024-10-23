@@ -27,9 +27,10 @@ public class EditarProcedimento extends HttpServlet {
         String nome = request.getParameter("nome");
         String valor = request.getParameter("valor");
         String duracao = request.getParameter("duracao");
+        String idUsuario = request.getParameter("idUsuario");
 
-        //Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor));
-        //request.setAttribute("procedimento", procedimento);
+        Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor), Integer.parseInt(idUsuario));
+        request.setAttribute("procedimento", procedimento);
         request.setAttribute("modal", "modalEditarProcedimento");
 
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
@@ -49,9 +50,9 @@ public class EditarProcedimento extends HttpServlet {
         String nome = request.getParameter("nome");
         String valor = request.getParameter("valor");
         String duracao = request.getParameter("duracao");
-       // Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor));
+        Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor));
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        //procedimentoModel.updateById(procedimento);// Procedimento ja editado
+        procedimentoModel.updateById(procedimento);// Procedimento ja editado
         String caminhoContexto = request.getContextPath();
         response.sendRedirect(caminhoContexto + "/cadastrar-procedimento");// Retorno para a pagina de cadastro(tabela visualizacao procedimentos)
 

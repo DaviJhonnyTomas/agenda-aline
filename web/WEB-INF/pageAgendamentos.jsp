@@ -57,7 +57,7 @@
                 width: 100%;
             }
             .item-procedimento{
-               margin-left: 10px;
+                margin-left: 10px;
             }
             #seletor-procedimento{
                 width: 100%;
@@ -65,6 +65,7 @@
                 border: #B7044A solid 3px;
                 background-color: #DEBDC6;
             }
+            
         </style>
     </head>
 
@@ -155,7 +156,7 @@
 
 
                         </div>
-           
+
                         <div class="form-group ">
                             <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data">
 
@@ -291,6 +292,22 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
+                            <%
+                                    String modalParam = (String) request.getAttribute("modal");
+                                    if (modalParam != null) {
+                                
+                                        if ("modalEditarAgendamento".equals(modalParam)) {
+                            %>
+                            <script>
+
+                                $(document).ready(function () {
+                                    $('#modalEditarAgendamento').modal('show');
+                                });
+                            </script>
+                            <%
+                                    }
+                               }
+                            %>
                             <div class="modal fade" id="modalEditarAgendamento" tabindex="-1" role="dialog"
                                  aria-labelledby="TituloModalCentralizado" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -318,16 +335,35 @@
                                                         </c:forEach>
                                                     </select>
                                                 </div>
-                                                <div class="input-group mb-3">
-                                                    <select name ="idProcedimento" class="form-control input-text custom-select" id="inputGroupSelect01">
-                                                        <option value="${procedimentoSelecionado.id}" selected>${procedimentoSelecionado.nome}</option>
-                                                        <c:forEach var="procedimento" items="${procedimentos}">
-                                                            <c:if test="${procedimento.id != procedimentoSelecionado.id}"> <!-- esse if serve para "filtrarmos" o procedimento que já esta selecionado. problema: estava aparecendo o procedimento selecionado duas vezes -->
-                                                                <option value="${procedimento.id}">${procedimento.nome}</option> <!-- só vai cair, se o id do procedimento for diferente (!=) do id do procedimento selecionado -->
-                                                            </c:if>
+
+
+
+                                                <div class="input-group mb-3 form-group" >
+                                                    <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentos"
+                                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Selecione os procedimentos
+                                                    </button>
+
+
+                                                    <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
+                                                        <c:forEach var="procedimentoSelecionado" items="${procedimentosSelecionados}" varStatus="i">
+                                                            <div class="item-procedimento">
+                                                                <input type="checkbox" value="${procedimentoSelecionado.id}" name="idProcedimentoStart${i.index}" id="defaultCheck1" checked="true">
+                                                                ${procedimentoSelecionado.nome}
+                                                            </div>                                   
 
                                                         </c:forEach>
-                                                    </select>
+                                                        <c:forEach var="procedimento" items="${procedimentos2}" varStatus="i">
+                                                            <div class="item-procedimento">
+                                                                <input type="checkbox" value="${procedimento.id}" name="idProcedimentoEnd${i.index}" id="defaultCheck1" >
+                                                                ${procedimento.nome}
+                                                            </div>   
+                                                        </c:forEach>
+
+
+                                                    </div>
+
+
                                                 </div>
                                                 <div class="form-group ">
                                                     <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data" value="${agendamento.data}">
@@ -346,19 +382,7 @@
                                     </div>
                                 </div>
 
-                                <%
-                                    String modalParam = (String) request.getAttribute("modal");
-                                    if ("modalEditarAgendamento".equals(modalParam)) {
-                                %>
-                                <script>
 
-                                    $(document).ready(function () {
-                                        $('#modalEditarAgendamento').modal('show');
-                                    });
-                                </script>
-                                <%
-                                    }
-                                %>
                             </div>
 
                             <div class="modal" id="modalErro" tabindex="-1" role="dialog">

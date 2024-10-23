@@ -31,6 +31,13 @@ public class Cliente {
         this.email = email;
         this.idNegocio = idNegocio;
     }
+    public Cliente(int id,String nome, String telefone, String email) {
+        this.id = id;
+        this.nome = nome;
+        this.telefone = telefone;
+        this.email = email;
+        
+    }
 
     public int getIdNegocio() {
         return idNegocio;

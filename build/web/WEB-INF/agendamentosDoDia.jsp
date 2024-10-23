@@ -51,6 +51,15 @@
                 height: 100%;
             }
 
+            #btn-agenda{
+                margin-bottom: 20px;
+                border: #B7044A 3px solid;
+                border-radius: 5px;
+                background-color: #b704499a;
+                color: whitesmoke;
+                padding: 8px;
+            }
+
 
         </style>
     </head>
@@ -102,7 +111,14 @@
         <div id="container-main">
             <div id="container-principal">
                 <div class="mx-auto" id="container-conteudo">
-                    <h2 id="titulo">Agendamentos do dia</h2>
+                    <div class="d-flex justify-content-between">
+                        <h2 id="titulo">Agendamentos do dia</h2>
+
+                        <div class="align-content-end mb-4" >
+                            <a href="${caminhoContexto}/listagem-agendamento-semanal" id="btn-agenda" >Agenda Semanal</a>
+
+                        </div>
+                    </div>
                     <ul>
                         <c:forEach varStatus="status" var="agendamento" items="${agendamentos}">
                             <li>
