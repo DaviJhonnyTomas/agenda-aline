@@ -189,10 +189,10 @@
                                                 ${procedimento.nome}
                                             </td>
                                             <td class="td-table">
-                                                ${procedimento.duracao} 
+                                                ${procedimento.duracao} hrs
                                             </td>
                                             <td class="td-table">
-                                                ${procedimento.valor}
+                                                ${procedimento.valor} €
                                             </td>
                                             <td id="tb-funcoes">
                                                 <a href="${caminhoContexto}/editar-procedimento?id=${procedimento.id}&nome=${procedimento.nome}&valor=${procedimento.valor}&duracao=${procedimento.duracao}&idUsuario=${procedimento.idUsuario}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarProcedimento) -->

@@ -48,8 +48,26 @@
                 border-radius: 10px;
                 border: 3px solid #B7044A;
                 color: #555;
+                position: relative;
             }
             #dropdownButtonProcedimentos::after{
+                position: absolute;
+                right: 10px; /* Ajuste este valor conforme necessário */
+                top: 17px;
+                color: black;
+                pointer-events: none; /* Garante que o ícone não interfira nos cliques do botão */
+
+
+            }
+            #dropdownButtonProcedimentosEditar{
+                width: 100%;
+                text-align: start;
+                background-color: #DEBDC6;
+                border-radius: 10px;
+                border: 3px solid #B7044A;
+                color: #555;
+            }
+            #dropdownButtonProcedimentosEditar::after{
                 margin-left: 765px;
                 color: black;
             }
@@ -65,7 +83,7 @@
                 border: #B7044A solid 3px;
                 background-color: #DEBDC6;
             }
-            
+
         </style>
     </head>
 
@@ -135,27 +153,47 @@
                             </select>
                         </div>
 
-                        <div class="input-group mb-3 form-group" >
+                        <div class="input-group mb-3 form-group">
                             <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentos"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Selecione os procedimentos
                             </button>
 
-
                             <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
                                 <c:forEach var="procedimento" items="${procedimentos}" varStatus="i">
                                     <div class="item-procedimento">
-                                        <input type="checkbox" value="${procedimento.id}" name="idProcedimento${i.index}" id="defaultCheck1">
-                                        ${procedimento.nome}
+                                        <input type="checkbox" value="${procedimento.id}" 
+                                               name="idProcedimento${i.index}" 
+                                               id="procedimento${i.index}" 
+                                               data-name="${procedimento.nome}"
+                                               class="procedimento-checkbox">
+                                        <label for="procedimento${i.index}">${procedimento.nome}</label>
                                     </div>                                   
-
                                 </c:forEach>
-
-
                             </div>
-
-
                         </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const dropdownButton = document.getElementById("dropdownButtonProcedimentos");
+                                const checkboxes = document.querySelectorAll(".procedimento-checkbox");
+
+                                // Função para atualizar o texto do botão com os procedimentos selecionados
+                                function updateSelectedProcedures() {
+                                    const selectedProcedures = Array.from(checkboxes)
+                                            .filter(checkbox => checkbox.checked)
+                                            .map(checkbox => checkbox.getAttribute("data-name"));
+
+                                    dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
+                                }
+
+                                // Adiciona evento para cada checkbox
+                                checkboxes.forEach(checkbox => {
+                                    checkbox.addEventListener("change", updateSelectedProcedures);
+                                });
+                            });
+                        </script>
+
 
                         <div class="form-group ">
                             <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data">
@@ -260,13 +298,23 @@
                                                    ArrayList<Procedimento> procedimentos = agProcedimentoModel.getProcedimentosByIdAgendamento(agendamento.getId());
                                                    pageContext.setAttribute("procedimentos", procedimentos);
                                                 %>
-                                                <ul>
-
+                                                <ul> 
+                                                    <% double somaProcedimentos = 0; %>
                                                     <c:forEach var="procedimento" items="${procedimentos}">
-                                                        <li>${procedimento.nome}</li>
+                                                        <li>${procedimento.nome}</li> 
+
+                                                        <% 
+                                                            Procedimento procedimento = (Procedimento) pageContext.getAttribute("procedimento");
+                                                            somaProcedimentos = somaProcedimentos + procedimento.getValor();
+                                                            pageContext.setAttribute("somaProcedimentos", somaProcedimentos);
+                                                            
+                                                        %>
 
 
                                                     </c:forEach>
+                                                    <div id="soma-procedimentos">
+                                                        ${somaProcedimentos} €
+                                                    </div>
 
                                                 </ul>
                                             </td>
@@ -337,34 +385,50 @@
                                                 </div>
 
 
-
-                                                <div class="input-group mb-3 form-group" >
-                                                    <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentos"
+                                                <div class="input-group mb-3 form-group">
+                                                    <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentosEditar"
                                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         Selecione os procedimentos
                                                     </button>
 
-
                                                     <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
-                                                        <c:forEach var="procedimentoSelecionado" items="${procedimentosSelecionados}" varStatus="i">
+                                                        <c:forEach var="procedimento" items="${procedimentos}" varStatus="i">
                                                             <div class="item-procedimento">
-                                                                <input type="checkbox" value="${procedimentoSelecionado.id}" name="idProcedimentoStart${i.index}" id="defaultCheck1" checked="true">
-                                                                ${procedimentoSelecionado.nome}
+                                                                <input type="checkbox" value="${procedimento.id}" 
+                                                                       name="idProcedimento${i.index}" 
+                                                                       id="procedimento${i.index}" 
+                                                                       data-name="${procedimento.nome}"
+                                                                       class="procedimento-checkbox-editar">
+                                                                <label for="procedimento${i.index}">${procedimento.nome}</label>
                                                             </div>                                   
-
                                                         </c:forEach>
-                                                        <c:forEach var="procedimento" items="${procedimentos2}" varStatus="i">
-                                                            <div class="item-procedimento">
-                                                                <input type="checkbox" value="${procedimento.id}" name="idProcedimentoEnd${i.index}" id="defaultCheck1" >
-                                                                ${procedimento.nome}
-                                                            </div>   
-                                                        </c:forEach>
-
-
                                                     </div>
-
-
                                                 </div>
+
+                                                <script>
+                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                        const dropdownButton = document.getElementById("dropdownButtonProcedimentosEditar");
+                                                        const checkboxes = document.querySelectorAll(".procedimento-checkbox-editar");
+
+                                                        // Função para atualizar o texto do botão com os procedimentos selecionados
+                                                        function updateSelectedProceduresEditar() {
+                                                            const selectedProcedures = Array.from(checkboxes)
+                                                                    .filter(checkbox => checkbox.checked)
+                                                                    .map(checkbox => checkbox.getAttribute("data-name"));
+
+                                                            dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
+                                                        }
+
+                                                        // Adiciona evento para cada checkbox
+                                                        checkboxes.forEach(checkbox => {
+                                                            checkbox.addEventListener("change", updateSelectedProceduresEditar);
+                                                        });
+                                                    });
+                                                </script>
+
+
+
+
                                                 <div class="form-group ">
                                                     <input name="data" type="date" class="form-control input-text" id="input-data" placeholder="Data" value="${agendamento.data}">
                                                     <div class="form-group ">

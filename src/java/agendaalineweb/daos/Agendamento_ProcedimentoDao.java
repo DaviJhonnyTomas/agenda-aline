@@ -34,4 +34,25 @@ public class Agendamento_ProcedimentoDao {
         
     }
     
+    public void removerProcedimentoAgendamento(Connection conexao, int idAgendamento, int idProcedimento) throws SQLException {
+        String sql = "DELETE FROM Agendamento_Procedimento WHERE idAgendamento = ? AND idProcedimento = ?";
+        
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAgendamento);
+            stmt.setInt(2, idProcedimento);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void adicionarProcedimentoAgendamento(Connection conexao, int idAgendamento, int idProcedimento) throws SQLException {
+        String sql = "INSERT INTO Agendamento_Procedimento (idAgendamento, idProcedimento) VALUES (?, ?)";
+        
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAgendamento);
+            stmt.setInt(2, idProcedimento);
+            stmt.executeUpdate();
+        }
+    }
+
+    
 }

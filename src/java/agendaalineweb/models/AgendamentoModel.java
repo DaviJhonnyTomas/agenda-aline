@@ -27,9 +27,9 @@ public class AgendamentoModel {
 
     }
 
-    public void updateById(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) {//recebemos da interface(AgendaAline.java).
+    public void updateById(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) throws SQLException {//recebemos da interface(AgendaAline.java).
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        daoAgendamento.updateById(agendamento, idsProcedimentos);//chamada do metodo updateById da DAO.
+        daoAgendamento.updateAgendamentoProcedimentos(agendamento, idsProcedimentos);//chamada do metodo updateAgendamentoProcedimentos da DAO.
 
     }
     

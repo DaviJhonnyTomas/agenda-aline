@@ -143,13 +143,22 @@
             tr{
                 line-height: 10px;
             }
-            
+
             #calendario{
                 background-color: rgba(245, 245, 245, 0.4);
                 border: 1px solid #B7044A !important;
             }
             #container-calendario{
                 margin-top: 20px ;
+            }
+            .th-item-semanal {
+
+                color: whitesmoke;
+
+                border-radius: 5px;
+
+                text-align: center;
+
             }
 
         </style>
@@ -206,8 +215,8 @@
                     <div id="container-calendario" class="d-flex justify-content-end">
                         <input type="date" id="calendario" value="${dataAtual}">
                     </div>
-                    
-                    
+
+
 
                     <div class="row justify-content-center" id="conteudo-tabela">
                         <div class="col-12">
@@ -217,8 +226,8 @@
                                 </div>
                                 <c:forEach var="i" begin="0" end="6">
                                     <div class="container-thitem text-center">
-                                        <span class="th-item">${dias[i]}</span><br>
-                                        <span class="th-item">${dataInicial.plusDays(i).getDayOfMonth()}</span> <!-- Mostra o número do dia -->
+                                        <span class="th-item-semanal">${dias[i]}</span><br>
+                                        <span class="th-item-semanal">${dataInicial.plusDays(i).getDayOfMonth()}</span> <!-- Mostra o número do dia -->
                                     </div>
                                 </c:forEach>
 
@@ -311,13 +320,18 @@
                     out.println("<div class='dropdown-menu' aria-labelledby='btnExpandirAgendamento'>");
 
                     // Lista procedimentos e detalhes do agendamento
+                    double somaProcedimentos = 0;
                     for (Procedimento procedimento : agendamento.getProcedimentos()) {
                         out.println("<span class='dropdown-item'>" + procedimento.getNome() + "</span>");
+                        somaProcedimentos = somaProcedimentos + procedimento.getValor();
+                       
+                                                           
                     }
                     LocalDate data = agendamento.getData();
                     String dataConvertida = data.getDayOfMonth() + "/" + data.getMonthValue() +"/"+ data.getYear();
                     out.println("<span class='dropdown-item' >" + dataConvertida + "</span>");
                     out.println("<span class='dropdown-item'>" + agendamento.getHora() + "</span>");
+                    out.println("<span class='dropdown-item'>" + somaProcedimentos + "€ </span>");
                     out.println("</div>");
                     out.println("</div>");
                     out.println("</td>");

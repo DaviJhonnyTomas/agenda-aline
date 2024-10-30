@@ -3,6 +3,7 @@ package agendaalineweb.daos;
 import agendaalineweb.conect.Conexao;
 import agendaalineweb.entities.Agendamento;
 import agendaalineweb.entities.Agendamento_Procedimento;
+import agendaalineweb.entities.Procedimento;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -140,31 +141,24 @@ public class AgendamentoDao {
     }
 
     private void updateAgendamento(Connection conexao, Agendamento agendamento) {
-        String sql = "INSERT INTO agendamento (hora, data, idCliente, idUsuario) VALUES (?, ?, ?, ?)";
+        String sql = "update agendamento set hora=?, data=?, idCliente=? where id = ? ";
 
         PreparedStatement estadoPreparado = null;
-        int id = 0;
         try {
 
             conexao.setAutoCommit(false);
-            estadoPreparado = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            estadoPreparado = conexao.prepareStatement(sql);
 
             Time horaConvertida = Time.valueOf(agendamento.getHora());
             estadoPreparado.setTime(1, horaConvertida);
             Date dataConvertida = Date.valueOf(agendamento.getData());
             estadoPreparado.setDate(2, dataConvertida);
             estadoPreparado.setInt(3, agendamento.getIdCliente());
-            estadoPreparado.setInt(4, agendamento.getIdUsuario());
-            int linhasGeradas = estadoPreparado.executeUpdate();
+            estadoPreparado.setInt(4, agendamento.getId());
+            
+            estadoPreparado.executeUpdate();
 
-            if (linhasGeradas == 0) {
-                throw new SQLException("Erro ao cadastrar agendamento");
-            } else {
-                ResultSet rs = estadoPreparado.getGeneratedKeys();
-                rs.next();
-                id = rs.getInt(1);
-                agendamento.setId(id);
-            }
+            
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -190,36 +184,55 @@ public class AgendamentoDao {
     }
 
     public void updateAgendamentoProcedimentos(Agendamento agendamento, ArrayList<Integer> idsProcedimentos) throws SQLException {
-        String sql = "SELECT * Agendamento_Procedimento WHERE idAgendamento = ? "; //buscar todos os procedimentos de um agendamento (fazer método)
+    // Inicializando DAOs e conexões
+    Agendamento_ProcedimentoDao agProcedimentoDao = new Agendamento_ProcedimentoDao();
+    Connection conexao = new Conexao().getConnection();
+    conexao.setAutoCommit(false);
+    
+    try {
+        // Passo 1: Obter procedimentos atuais
+        ArrayList<Procedimento> procedimentosAtuais = agProcedimentoDao.getProcedimentosByIdAgendamento(agendamento.getId());
         
-        String sql = "UPDATE Agendamento_Procedimento SET idProcedimento=? WHERE id = ?"; //para cada procedimento, um update
-
-        Connection conexao = new Conexao().getConnection();
-        conexao.setAutoCommit(false);
-
-        insertAgendamento(conexao, agendamento);
-
-        try {
-
-            for (int i = 0; i < idsProcedimentos.size(); i++) {
-                PreparedStatement estadoPreparado = conexao.prepareStatement(sql);
-                estadoPreparado.setInt(1, idsProcedimentos.get(i));
-                estadoPreparado.setInt(2, agendamento.getId());
-
-                estadoPreparado.execute();
-                estadoPreparado.close();
-            }
-
-            conexao.commit();
-
-        } catch (SQLException ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-
-        } finally {
-            //conexao.close();
+        // Convertendo os IDs dos procedimentos atuais para uma lista para facilitar a comparação
+        ArrayList<Integer> idsProcedimentosAtuais = new ArrayList<>();
+        for (Procedimento procedimento : procedimentosAtuais) {
+            idsProcedimentosAtuais.add(procedimento.getId());
         }
+        
+        // Passo 2: Identificar procedimentos a serem adicionados e removidos
+        ArrayList<Integer> procedimentosParaAdicionar = new ArrayList<>(idsProcedimentos);
+        procedimentosParaAdicionar.removeAll(idsProcedimentosAtuais);
+        
+        ArrayList<Integer> procedimentosParaRemover = new ArrayList<>(idsProcedimentosAtuais);
+        procedimentosParaRemover.removeAll(idsProcedimentos);
+
+        // Passo 3: Remover procedimentos que não estão na nova lista
+        for (Integer idProcedimento : procedimentosParaRemover) {
+            agProcedimentoDao.removerProcedimentoAgendamento(conexao, agendamento.getId(), idProcedimento);
+        }
+
+        // Passo 4: Adicionar novos procedimentos
+        for (Integer idProcedimento : procedimentosParaAdicionar) {
+            agProcedimentoDao.adicionarProcedimentoAgendamento(conexao, agendamento.getId(), idProcedimento);
+        }
+
+        // Passo 5: Atualizar o próprio agendamento, se necessário
+        updateAgendamento(conexao, agendamento);
+        
+        // Commit das alterações
+        conexao.commit();
+        
+    } catch (SQLException e) {
+        // Em caso de erro, realizar rollback
+        conexao.rollback();
+        throw e;
+    } finally {
+        // Fechar a conexão
+        conexao.setAutoCommit(true);
+        conexao.close();
     }
+}
+
 
     public ArrayList<Agendamento> selectAll() {
         String sql = "select * from agendamento ";

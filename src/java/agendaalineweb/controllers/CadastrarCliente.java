@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 @WebServlet(name = "CadastrarCliente", urlPatterns = {"/cadastrar-cliente"})
 public class CadastrarCliente extends HttpServlet {
-
+    
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

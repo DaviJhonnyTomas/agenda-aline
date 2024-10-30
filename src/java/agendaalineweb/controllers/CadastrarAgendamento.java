@@ -56,7 +56,10 @@ public class CadastrarAgendamento extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idCliente = request.getParameter("idCliente");
-
+        boolean idClienteInformado = false;
+        if (!idCliente.isEmpty()) { // se o id do cliente não for vazio (! serve para negar)
+            idClienteInformado = true;
+        }
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
         ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll();
 
@@ -67,31 +70,59 @@ public class CadastrarAgendamento extends HttpServlet {
                 idsProcedimentos.add(Integer.parseInt(idProcedimento));
             }
         }
+        boolean idsProcedimentosInformados = false;
+        if (idsProcedimentos.size() > 0) {
+            idsProcedimentosInformados = true;
+        }
 
         String hora = request.getParameter("hora");
+
+        LocalTime horaConvertida = null;
+        boolean horaInformada = false;
+        if (!hora.isEmpty()) {
+            horaConvertida = LocalTime.parse(hora);
+            horaInformada = true;
+        }
+
         String data = request.getParameter("data");
-        
+
         HttpSession sessao = request.getSession();
         Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
 
         DataModel dataModel = new DataModel();
-        LocalDate dataConvertida = LocalDate.parse(data);
+        LocalDate dataConvertida = null;
+
+        boolean dataInformada = false;
+        if (!data.isEmpty()) {
+            dataConvertida = LocalDate.parse(data);
+            dataInformada = true;
+        }
+
+        boolean dataAnterior = true;
 
         LocalDate dataHoje = LocalDate.now();
         String mensagem = null;
-        if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
-            Agendamento agendamento = new Agendamento(LocalTime.parse(hora), dataConvertida, Integer.parseInt(idCliente),usuario.getId());
-            AgendamentoModel agendamentoModel = new AgendamentoModel();
-            try {
-                agendamentoModel.insert(agendamento, idsProcedimentos);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+        if (idClienteInformado && idsProcedimentosInformados && horaInformada && dataInformada) {
+
+            if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
+                Agendamento agendamento = new Agendamento(horaConvertida, dataConvertida, Integer.parseInt(idCliente), usuario.getId());
+                AgendamentoModel agendamentoModel = new AgendamentoModel();
+                dataAnterior = false;
+                try {
+                    agendamentoModel.insert(agendamento, idsProcedimentos);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+            }else{
+                mensagem = "A data informada é anterior a data de hoje.";
             }
 
         } else {
-            mensagem = "A data informada não pode ser anterior a data de hoje";
-            request.setAttribute("modalErro", mensagem);
+            mensagem = "Todos os campos devem ser preenchidos.";
+            
         }
+        request.setAttribute("modalErro", mensagem);
         AgendamentoModel agendamentoModel = new AgendamentoModel();
         ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
         request.setAttribute("agendamentos", agendamentos);
