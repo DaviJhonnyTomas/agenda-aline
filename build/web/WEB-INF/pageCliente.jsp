@@ -42,10 +42,163 @@
                 width: 28.6%;
                 text-align: center;
             }
+
+            #alert-container {
+                position: fixed;
+                top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+                width: auto;
+                max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
+
+                border-radius: 10px;
+            }
+
+            /* Animação para a borda piscante */
+            @keyframes border-blink {
+                0% {
+                    border: 3px solid black;
+                }
+                50% {
+                    border: 3px solid transparent;
+                }
+                100% {
+                    border: 3px solid black;
+                }
+            }
+
+            .alert {
+                margin: 0 auto; /* Centraliza o conteúdo do alerta */
+                text-align: center;
+                border-radius: 10px;
+                background-color: whitesmoke;
+                animation: border-blink 1s infinite; /* Animação de borda piscante */
+            }
+
+            #confirmacao-excluir-container {
+                position: fixed;
+                top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+                width: auto;
+                max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
+
+                border-radius: 10px;
+            }
+
+
         </style>
     </head>
 
     <body class="d-flex flex-column">
+        <div id="alert-container"></div>
+        <audio id="alert-sound" src="audios/alert-sound.mp3" preload="auto"></audio>
+
+        <%
+            
+            if(request.getAttribute("mensagemErro")!=null){
+        %>
+        <script>
+            // Cria o alerta dinamicamente
+            var alertHtml = `
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${mensagemErro}
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+`;
+
+            // Insere o alerta no container
+            document.getElementById("alert-container").innerHTML = alertHtml;
+            var alertSound = document.getElementById("alert-sound");
+            try {
+                alertSound.play();
+            } catch (error) {
+                console.warn("Som de alerta bloqueado pelo navegador: ", error);
+            }
+        </script>
+        <%
+        }
+                                    
+        %>
+
+        <!--caixa de confirmação botão excluir -->
+        <div id="confirmacao-excluir-container"></div>
+
+        <div id="confirmacao-excluir-container" hidden>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div>Você realmente deseja excluir?</div>
+                <button type="button" id="btnConfirmar" class="btn btn-danger">Sim</button>
+                <button type="button" onclick="fecharConfirmacaoExclusao()" class="btn btn-secondary">Não</button>
+            </div>
+        </div>
+
+        <script>
+            function dispararAlerta(idCliente) {
+                // Torna o container de confirmação visível
+                var confirmacaoContainer = document.getElementById("confirmacao-excluir-container");
+                confirmacaoContainer.hidden = false;
+                confirmacaoContainer.style.display = "block";
+
+                // Seleciona o botão de confirmação
+                var btnConfirmar = document.getElementById("btnConfirmar");
+
+                // Remove qualquer event listener existente para evitar duplicações
+                btnConfirmar.removeEventListener("click", confirmarExclusao);
+
+                // Adiciona um event listener ao botão "Sim" passando o idCliente como parâmetro
+                btnConfirmar.addEventListener("click", function () {
+                    confirmarExclusao(idCliente);
+                });
+
+                // Toca o som do alerta se disponível
+                var alertSound = document.getElementById("alert-sound");
+                try {
+                    alertSound.play();
+                } catch (error) {
+                    console.warn("Som de alerta bloqueado pelo navegador: ", error);
+                }
+            }
+
+
+
+            function confirmarExclusao(confirmado) {
+                if (confirmado && confirmado.dataset) {
+                    let idCliente = confirmado.dataset.id;
+
+                    console.log(idCliente);
+                    // Cria um formulário dinâmico para exclusão
+                    var form = document.createElement("form");
+                    form.method = "post";
+                    form.action = "excluir-cliente";
+
+                    // Adiciona um campo hidden com o id do cliente
+                    var inputId = document.createElement("input");
+                    inputId.type = "hidden";
+                    inputId.name = "id";
+                    inputId.value = idCliente;
+
+                    console.log(inputId.value);
+
+                    form.appendChild(inputId);
+
+                    // Adiciona o formulário ao body e o submete
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    // Remove o alerta de confirmação se o usuário clicar em "Não"
+                    document.getElementById("confirmacao-excluir-container").innerHTML = "";
+                }
+            }
+            function fecharConfirmacaoExclusao() {
+                document.getElementById("confirmacao-excluir-container").hidden = true;
+            }
+
+        </script>
+
 
 
         <div id="container-menu">
@@ -177,6 +330,38 @@
                                 </div>
                             </div>
 
+                            <div class="modal" id="modalErro" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Erro</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>${modalErro}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%
+                            String modalParamErro = (String) request.getAttribute("modalErro");
+                            if (modalParamErro != null) {
+                                %>
+                                <script>
+
+                                    $(document).ready(function () {
+                                        $('#modalErro').modal('show');
+                                    });
+                                </script>
+                                <%
+                                    }
+                                %>
+                            </div>
+
 
                             <table class="table">
 
@@ -194,10 +379,8 @@
                                             </td>
                                             <td id="tb-funcoes">
                                                 <a href="${caminhoContexto}/editar-cliente?id=${cliente.id}&nome=${cliente.nome}&telefone=${cliente.telefone}&email=${cliente.email}&idNegocio=${cliente.idNegocio}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
-                                                <form action="excluir-cliente" method="post">
-                                                    <input name="id" value="${cliente.id}" hidden="true">
-                                                    <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>
-                                                </form>
+
+                                                <button id="btnExcluir" onclick="dispararAlerta(${cliente.id})"><i class="ph ph-trash"></i></button>
                                             </td>
                                         </tr>
                                     </c:forEach>

@@ -146,7 +146,8 @@ public class ClienteDao {
 
             conexao.commit();
 
-        } catch (SQLException ex) {
+        }
+        catch (SQLException ex) {
             ex.printStackTrace();
 
         } finally {

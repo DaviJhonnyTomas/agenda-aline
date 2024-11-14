@@ -28,9 +28,10 @@ public class ExcluirAgendamento extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("id");
+        int id = Integer.parseInt(request.getParameter("id"));
         AgendamentoModel modelAgendamento = new AgendamentoModel();
-        modelAgendamento.deleteById(Integer.parseInt(id));
+       
+        modelAgendamento.deleteById(id);
         String caminhoContexto = request.getContextPath();
         response.sendRedirect(caminhoContexto+"/cadastrar-agendamento");
        

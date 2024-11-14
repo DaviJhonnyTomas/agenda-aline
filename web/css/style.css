@@ -102,7 +102,7 @@ body {
 
 #container-principal {
     background-color: rgba(255, 255, 255, 0.4);
-    
+
 
     display: flex;
     /* Usa flexbox para ajustar o conteúdo */
@@ -163,13 +163,13 @@ body {
 }
 
 .th-item {
-   
+
     color: whitesmoke;
     border: #B7044A 3px solid;
     border-radius: 5px;
     background-color: #b704499a;
     text-align: center;
-    
+
 }
 
 .container-thitem {
@@ -297,7 +297,7 @@ form {
     justify-content: center;
     background-color: #edededa6;
     border-radius: 10px;
-    box-shadow: 4px 4px 2px 0px rgba(209,209,209,1);   
+    box-shadow: 4px 4px 2px 0px rgba(209,209,209,1);
 }
 
 .profile-card .profile-img {
@@ -306,7 +306,7 @@ form {
     border-radius: 50%;
     background-color: #DEBDC6;
     border: #B7044A 3px solid;
-    
+
 }
 
 .profile-card .name {
@@ -321,7 +321,7 @@ form {
     background-color: #edededa6;
     border-radius: 10px;
     box-shadow: 4px 4px 2px 0px rgba(209,209,209,1);
-        padding: 2%;
+    padding: 2%;
     justify-content: center;
 }
 .settings-card h2 {
@@ -363,7 +363,7 @@ form {
 .button:hover {
     background-color: #B7044A;
     color: #fff;
-    
+
 }
 
 .header {
@@ -403,7 +403,7 @@ form {
     align-items: center;
 }
 
- i{
+i{
     font-size: 25px;
 }
 
@@ -434,10 +434,43 @@ form {
 }
 
 /*estilo teste*/
-  
+
 .value{
     border: #B7044A 3px solid ;
     border-radius: 10px;
     margin: 1.5%;
     padding: 1%;
+}
+
+#alert-container {
+    position: fixed;
+    top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+    width: auto;
+    max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
+
+    border-radius: 10px;
+}
+
+/* Animação para a borda piscante */
+@keyframes border-blink {
+    0% {
+        border: 3px solid black;
+    }
+    50% {
+        border: 3px solid transparent;
+    }
+    100% {
+        border: 3px solid black;
+    }
+}
+
+.alert {
+    margin: 0 auto; /* Centraliza o conteúdo do alerta */
+    text-align: center;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    animation: border-blink 1s infinite; /* Animação de borda piscante */
 }

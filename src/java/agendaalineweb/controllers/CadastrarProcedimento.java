@@ -5,6 +5,7 @@
 package agendaalineweb.controllers;
 
 import agendaalineweb.entities.Procedimento;
+import agendaalineweb.entities.Usuario;
 import agendaalineweb.models.ProcedimentoModel;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 /**
@@ -21,9 +23,6 @@ import java.util.ArrayList;
  */
 @WebServlet(name = "CadastrarProcedimento", urlPatterns = {"/cadastrar-procedimento"})
 public class CadastrarProcedimento extends HttpServlet {
-
-    
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -37,13 +36,13 @@ public class CadastrarProcedimento extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
-            String caminhoContexto = request.getContextPath();
-            request.setAttribute("caminhoContexto", caminhoContexto);
-            request.setAttribute("procedimentos", procedimentos);
-            request.getRequestDispatcher("WEB-INF/pageProcedimentos.jsp").forward(request, response);
-        
+        ProcedimentoModel procedimentoModel = new ProcedimentoModel();
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        String caminhoContexto = request.getContextPath();
+        request.setAttribute("caminhoContexto", caminhoContexto);
+        request.setAttribute("procedimentos", procedimentos);
+        request.getRequestDispatcher("WEB-INF/pageProcedimentos.jsp").forward(request, response);
+
     }
 
     /**
@@ -60,10 +59,31 @@ public class CadastrarProcedimento extends HttpServlet {
         String nome = request.getParameter("nome");
         String duracao = request.getParameter("duracao");
         String valor = request.getParameter("valor");
-        Procedimento procedimento = new Procedimento(nome, duracao, Double.parseDouble(valor));
+
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        procedimentoModel.insert(procedimento);
-        response.sendRedirect("cadastrar-procedimento");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        String mensagem = null;
+        if (usuario == null) {
+            mensagem = "Você deve fazer login para realizar esta operação.";
+        } else if (!nome.isEmpty() && !duracao.isEmpty() && !valor.isEmpty()) {
+            
+
+            Procedimento procedimento = new Procedimento(nome, duracao, Double.parseDouble(valor), usuario.getId());
+
+            procedimentoModel.insert(procedimento);
+            response.sendRedirect("cadastrar-procedimento");
+        } else {
+            mensagem = "Todos os campos devem ser preenchidos.";
+        }
+        request.setAttribute("mensagemErro", mensagem);
+
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        request.setAttribute("procedimentos", procedimentos);
+
+        request.setAttribute("caminhoContexto", request.getContextPath());
+
+        request.getRequestDispatcher("WEB-INF/pageProcedimentos.jsp").forward(request, response);
+
     }
 
     /**

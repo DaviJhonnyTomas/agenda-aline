@@ -55,74 +55,79 @@ public class CadastrarAgendamento extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String idCliente = request.getParameter("idCliente");
-        boolean idClienteInformado = false;
-        if (!idCliente.isEmpty()) { // se o id do cliente não for vazio (! serve para negar)
-            idClienteInformado = true;
-        }
-        ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll();
-
-        ArrayList<Integer> idsProcedimentos = new ArrayList();
-        for (int i = 0; i < procedimentos2.size(); i++) {
-            String idProcedimento = request.getParameter("idProcedimento" + i);
-            if (idProcedimento != null) {
-                idsProcedimentos.add(Integer.parseInt(idProcedimento));
-            }
-        }
-        boolean idsProcedimentosInformados = false;
-        if (idsProcedimentos.size() > 0) {
-            idsProcedimentosInformados = true;
-        }
-
-        String hora = request.getParameter("hora");
-
-        LocalTime horaConvertida = null;
-        boolean horaInformada = false;
-        if (!hora.isEmpty()) {
-            horaConvertida = LocalTime.parse(hora);
-            horaInformada = true;
-        }
-
-        String data = request.getParameter("data");
-
         HttpSession sessao = request.getSession();
         Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
-
-        DataModel dataModel = new DataModel();
-        LocalDate dataConvertida = null;
-
-        boolean dataInformada = false;
-        if (!data.isEmpty()) {
-            dataConvertida = LocalDate.parse(data);
-            dataInformada = true;
-        }
-
-        boolean dataAnterior = true;
-
-        LocalDate dataHoje = LocalDate.now();
         String mensagem = null;
-        if (idClienteInformado && idsProcedimentosInformados && horaInformada && dataInformada) {
+                    ProcedimentoModel procedimentoModel = new ProcedimentoModel();
 
-            if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
-                Agendamento agendamento = new Agendamento(horaConvertida, dataConvertida, Integer.parseInt(idCliente), usuario.getId());
-                AgendamentoModel agendamentoModel = new AgendamentoModel();
-                dataAnterior = false;
-                try {
-                    agendamentoModel.insert(agendamento, idsProcedimentos);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+        if (usuario == null) {
+            mensagem = "Você deve fazer login para realizar esta operação.";
+        } else {
+            String idCliente = request.getParameter("idCliente");
+            boolean idClienteInformado = false;
+            if (!idCliente.isEmpty()) { // se o id do cliente não for vazio (! serve para negar)
+                idClienteInformado = true;
+            }
+            ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll();
+
+            ArrayList<Integer> idsProcedimentos = new ArrayList();
+            for (int i = 0; i < procedimentos2.size(); i++) {
+                String idProcedimento = request.getParameter("idProcedimento" + i);
+                if (idProcedimento != null) {
+                    idsProcedimentos.add(Integer.parseInt(idProcedimento));
                 }
-
-            }else{
-                mensagem = "A data informada é anterior a data de hoje.";
+            }
+            boolean idsProcedimentosInformados = false;
+            if (idsProcedimentos.size() > 0) {
+                idsProcedimentosInformados = true;
             }
 
-        } else {
-            mensagem = "Todos os campos devem ser preenchidos.";
+            String hora = request.getParameter("hora");
+
+            LocalTime horaConvertida = null;
+            boolean horaInformada = false;
+            if (!hora.isEmpty()) {
+                horaConvertida = LocalTime.parse(hora);
+                horaInformada = true;
+            }
+
+            String data = request.getParameter("data");
+
+            DataModel dataModel = new DataModel();
+            LocalDate dataConvertida = null;
+
+            boolean dataInformada = false;
+            if (!data.isEmpty()) {
+                dataConvertida = LocalDate.parse(data);
+                dataInformada = true;
+            }
+
+            boolean dataAnterior = true;
+
+            LocalDate dataHoje = LocalDate.now();
             
+            if (idClienteInformado && idsProcedimentosInformados && horaInformada && dataInformada) {
+
+                if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
+                    Agendamento agendamento = new Agendamento(horaConvertida, dataConvertida, Integer.parseInt(idCliente), usuario.getId());
+                    AgendamentoModel agendamentoModel = new AgendamentoModel();
+                    dataAnterior = false;
+                    try {
+                        agendamentoModel.insert(agendamento, idsProcedimentos);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+
+                } else {
+                    mensagem = "A data informada é anterior a data de hoje.";
+                }
+
+            } else {
+                mensagem = "Todos os campos devem ser preenchidos.";
+
+            }
         }
-        request.setAttribute("modalErro", mensagem);
+        request.setAttribute("mensagemErro", mensagem);
         AgendamentoModel agendamentoModel = new AgendamentoModel();
         ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
         request.setAttribute("agendamentos", agendamentos);

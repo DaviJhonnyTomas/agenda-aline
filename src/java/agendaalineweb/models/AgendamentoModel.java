@@ -75,4 +75,10 @@ public class AgendamentoModel {
        return agendamentos;
     }
 
+    public boolean clienteTemAgendamento(int id) {
+        AgendamentoDao agendamentoDao = new AgendamentoDao();
+        boolean clienteTemAgendamento = agendamentoDao.clienteTemAgendamento(id);
+        return clienteTemAgendamento;
+    }
+
 }

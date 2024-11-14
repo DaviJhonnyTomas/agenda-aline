@@ -83,11 +83,74 @@
                 border: #B7044A solid 3px;
                 background-color: #DEBDC6;
             }
+            #alert-container {
+                position: fixed;
+                top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+                width: auto;
+                max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
 
+                border-radius: 10px;
+            }
+
+            /* Animação para a borda piscante */
+            @keyframes border-blink {
+                0% {
+                    border: 3px solid black;
+                }
+                50% {
+                    border: 3px solid transparent;
+                }
+                100% {
+                    border: 3px solid black;
+                }
+            }
+
+            .alert {
+                margin: 0 auto; /* Centraliza o conteúdo do alerta */
+                text-align: center;
+                border-radius: 10px;
+                background-color: whitesmoke;
+                animation: border-blink 1s infinite; /* Animação de borda piscante */
+            }
         </style>
     </head>
 
     <body class="d-flex flex-column">
+        <div id="alert-container"></div>
+        <audio id="alert-sound" src="audios/alert-sound.mp3" preload="auto"></audio>
+
+        <%
+            
+            if(request.getAttribute("mensagemErro")!=null){
+        %>
+        <script>
+            // Cria o alerta dinamicamente
+            var alertHtml = `
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${mensagemErro}
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+`;
+
+            // Insere o alerta no container
+            document.getElementById("alert-container").innerHTML = alertHtml;
+            var alertSound = document.getElementById("alert-sound");
+            try {
+                alertSound.play();
+            } catch (error) {
+                console.warn("Som de alerta bloqueado pelo navegador: ", error);
+            }
+        </script>
+        <%
+        }
+                                    
+        %>
+
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
 
@@ -392,14 +455,24 @@
                                                     </button>
 
                                                     <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
-                                                        <c:forEach var="procedimento" items="${procedimentos}" varStatus="i">
+                                                        <c:forEach var="procedimento" items="${procedimentosSelecionados}" varStatus="i">
                                                             <div class="item-procedimento">
                                                                 <input type="checkbox" value="${procedimento.id}" 
-                                                                       name="idProcedimento${i.index}" 
-                                                                       id="procedimento${i.index}" 
+                                                                       name="idProcedimentoStart${i.index}" 
+                                                                       id="procedimentoStart${i.index}" 
                                                                        data-name="${procedimento.nome}"
-                                                                       class="procedimento-checkbox-editar">
-                                                                <label for="procedimento${i.index}">${procedimento.nome}</label>
+                                                                       class="procedimento-checkbox-editar" checked="true">
+                                                                <label for="procedimentoStart${i.index}">${procedimento.nome}</label>
+                                                            </div>                                   
+                                                        </c:forEach>
+                                                        <c:forEach var="procedimento" items="${procedimentos2}" varStatus="i">
+                                                            <div class="item-procedimento">
+                                                                <input type="checkbox" value="${procedimento.id}" 
+                                                                       name="idProcedimentoEnd${i.index}" 
+                                                                       id="procedimentoEnd${i.index}" 
+                                                                       data-name="${procedimento.nome}"
+                                                                       class="procedimento-checkbox-editar" >
+                                                                <label for="procedimentoEnd${i.index}">${procedimento.nome} </label>
                                                             </div>                                   
                                                         </c:forEach>
                                                     </div>
@@ -407,24 +480,28 @@
 
                                                 <script>
                                                     document.addEventListener("DOMContentLoaded", function () {
-                                                        const dropdownButton = document.getElementById("dropdownButtonProcedimentosEditar");
-                                                        const checkboxes = document.querySelectorAll(".procedimento-checkbox-editar");
+                                                        // Espera um pequeno intervalo para garantir que os elementos estejam carregados
+                                                        setTimeout(function () {
+                                                            const dropdownButton = document.getElementById("dropdownButtonProcedimentosEditar");
+                                                            const checkboxes = document.querySelectorAll(".procedimento-checkbox-editar");
 
-                                                        // Função para atualizar o texto do botão com os procedimentos selecionados
-                                                        function updateSelectedProceduresEditar() {
-                                                            const selectedProcedures = Array.from(checkboxes)
-                                                                    .filter(checkbox => checkbox.checked)
-                                                                    .map(checkbox => checkbox.getAttribute("data-name"));
+                                                            // Função para atualizar o texto do botão com os procedimentos selecionados
+                                                            function updateSelectedProceduresEditar() {
+                                                                const selectedProcedures = Array.from(checkboxes)
+                                                                        .filter(checkbox => checkbox.checked)
+                                                                        .map(checkbox => checkbox.getAttribute("data-name"));
 
-                                                            dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
-                                                        }
+                                                                dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
+                                                            }
 
-                                                        // Adiciona evento para cada checkbox
-                                                        checkboxes.forEach(checkbox => {
-                                                            checkbox.addEventListener("change", updateSelectedProceduresEditar);
-                                                        });
+                                                            // Adiciona evento para cada checkbox
+                                                            checkboxes.forEach(checkbox => {
+                                                                checkbox.addEventListener("change", updateSelectedProceduresEditar);
+                                                            });
+                                                        }, 100); // 100 ms de atraso para garantir o carregamento
                                                     });
                                                 </script>
+
 
 
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author Dell
  */
-public class ProcedimentoDao {
+public class ProcedimentoDao { 
 
     public ArrayList<Procedimento> selectByNome(String pesquisar) {
         String sql = "select * from procedimento where nome like ? ";// like (como alguma coisa / "comparacao")
@@ -51,7 +51,7 @@ public class ProcedimentoDao {
     }
 
     public void insert(Procedimento procedimento) {
-        String sql = "insert into procedimento ( nome, duracao, valor ) values(?, ?, ?)";
+        String sql = "insert into procedimento ( nome, duracao, valor, idUsuario ) values(?, ?, ?, ?)";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         try {
@@ -61,6 +61,7 @@ public class ProcedimentoDao {
             estadoPreparado.setString(1, procedimento.getNome());
             estadoPreparado.setString(2, procedimento.getDuracao());
             estadoPreparado.setDouble(3, procedimento.getValor());
+            estadoPreparado.setInt(4, procedimento.getIdUsuario());
             estadoPreparado.execute();
 
             conexao.commit();

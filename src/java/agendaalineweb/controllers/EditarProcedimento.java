@@ -6,6 +6,7 @@ package agendaalineweb.controllers;
 
 import agendaalineweb.entities.Cliente;
 import agendaalineweb.entities.Procedimento;
+import agendaalineweb.entities.Usuario;
 import agendaalineweb.models.ClienteModel;
 import agendaalineweb.models.ProcedimentoModel;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 @WebServlet(name = "EditarProcedimento", urlPatterns = {"/editar-procedimento"})
@@ -50,11 +52,33 @@ public class EditarProcedimento extends HttpServlet {
         String nome = request.getParameter("nome");
         String valor = request.getParameter("valor");
         String duracao = request.getParameter("duracao");
-        Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor));
+        String mensagem = null;
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        procedimentoModel.updateById(procedimento);// Procedimento ja editado
-        String caminhoContexto = request.getContextPath();
-        response.sendRedirect(caminhoContexto + "/cadastrar-procedimento");// Retorno para a pagina de cadastro(tabela visualizacao procedimentos)
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        if (usuario == null) {
+            mensagem = "Você deve fazer login para realizar esta operação.";
+
+        } else {
+
+            
+            if (!nome.isEmpty() && !duracao.isEmpty() && !valor.isEmpty()) {
+
+                Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor), usuario.getId());
+
+                procedimentoModel.updateById(procedimento);
+
+            } else {
+                mensagem = "Todos os campos devem ser preenchidos.";
+
+            }
+        }
+        request.setAttribute("mensagemErro", mensagem);
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        request.setAttribute("procedimentos", procedimentos);
+
+        request.setAttribute("caminhoContexto", request.getContextPath());
+
+        request.getRequestDispatcher("WEB-INF/pageProcedimentos.jsp").forward(request, response);
 
     }
 }

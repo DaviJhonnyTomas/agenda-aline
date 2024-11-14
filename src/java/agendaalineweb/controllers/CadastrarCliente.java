@@ -16,25 +16,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
- 
+
 /**
  *
  * @author Utilizador
  */
 @WebServlet(name = "CadastrarCliente", urlPatterns = {"/cadastrar-cliente"})
 public class CadastrarCliente extends HttpServlet {
-    
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            ClienteModel clienteModel = new ClienteModel();
-            ArrayList<Cliente> clientes = clienteModel.selectAll();
-            String caminhoContexto = request.getContextPath();
-            request.setAttribute("caminhoContexto", caminhoContexto);
-            request.setAttribute("clientes", clientes);
-            request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
-         
+        ClienteModel clienteModel = new ClienteModel();
+        ArrayList<Cliente> clientes = clienteModel.selectAll();
+        String caminhoContexto = request.getContextPath();
+        request.setAttribute("caminhoContexto", caminhoContexto);
+        request.setAttribute("clientes", clientes);
+        request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+
     }
 
     /**
@@ -51,19 +50,38 @@ public class CadastrarCliente extends HttpServlet {
         String nome = request.getParameter("nome");
         String telefone = request.getParameter("telefone");
         String email = request.getParameter("email");
-      
-        
-        
-        HttpSession sessao = request.getSession();
-        Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
-        
-        int idNegocio = usuario.getIdNegocio();
-          
-        Cliente cliente = new Cliente(nome, telefone, email, idNegocio);
-        
         ClienteModel clienteModel = new ClienteModel();
-        clienteModel.insert(cliente);
-        response.sendRedirect("cadastrar-cliente");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        String mensagem = null;
+        if (usuario == null) {
+            mensagem = "Você deve fazer login para realizar esta operação.";
+
+        }
+        else if (!nome.isEmpty() && !telefone.isEmpty() && !email.isEmpty()) {
+            //HttpSession sessao = request.getSession();
+            
+
+            //int idNegocio = usuario.getIdNegocio();
+            Cliente cliente = new Cliente(nome, telefone, email, usuario.getIdNegocio());
+
+            //ClienteModel clienteModel = new ClienteModel();
+            clienteModel.insert(cliente);
+            
+
+        } else {
+            mensagem = "Todos os campos devem ser preenchidos.";
+           
+
+        }
+        request.setAttribute("mensagemErro", mensagem);
+
+            request.setAttribute("clientes", clienteModel.selectAll());
+
+            String caminhoContexto = request.getContextPath();
+            request.setAttribute("caminhoContexto", caminhoContexto);
+
+            request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+
     }
 
     /**

@@ -78,6 +78,13 @@ public class Procedimento {
         this.duracao = duracao;
         this.valor = valor;
     }
+    public Procedimento(String nome, String duracao, double valor, int idUsuario) {
+
+        this.nome = nome;
+        this.duracao = duracao;
+        this.valor = valor;
+        this.idUsuario = idUsuario;
+    }
 
     @Override
     public String toString() {

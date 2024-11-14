@@ -44,12 +44,79 @@
                 text-align: center;
             }
             .item-procedimento{
-                
+
             }
+
+            #alert-container {
+                position: fixed;
+                top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+                width: auto;
+                max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
+
+                border-radius: 10px;
+            }
+
+            /* Animação para a borda piscante */
+            @keyframes border-blink {
+                0% {
+                    border: 3px solid black;
+                }
+                50% {
+                    border: 3px solid transparent;
+                }
+                100% {
+                    border: 3px solid black;
+                }
+            }
+
+            .alert {
+                margin: 0 auto; /* Centraliza o conteúdo do alerta */
+                text-align: center;
+                border-radius: 10px;
+                background-color: whitesmoke;
+                animation: border-blink 1s infinite; /* Animação de borda piscante */
+            }
+
+
         </style>
     </head>
 
     <body class="d-flex flex-column">
+        <div id="alert-container"></div>
+        <audio id="alert-sound" src="audios/alert-sound.mp3" preload="auto"></audio>
+
+        <%
+            
+            if(request.getAttribute("mensagemErro")!=null){
+        %>
+        <script>
+            // Cria o alerta dinamicamente
+            var alertHtml = `
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${mensagemErro}
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+`;
+
+            // Insere o alerta no container
+            document.getElementById("alert-container").innerHTML = alertHtml;
+            var alertSound = document.getElementById("alert-sound");
+            try {
+                alertSound.play();
+            } catch (error) {
+                console.warn("Som de alerta bloqueado pelo navegador: ", error);
+            }
+        </script>
+        <%
+        }
+                                    
+        %>
+
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
 
@@ -162,7 +229,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                           <form action="${caminhoContexto}/filtrar-procedimento" method="GET">
+                                            <form action="${caminhoContexto}/filtrar-procedimento" method="GET">
 
                                                 <input name="procedimento" id="input-filtrar" class="form-control" type="text"
                                                        placeholder="Digite o nome do procedimento">
@@ -178,6 +245,43 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal" id="modalErro" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Erro</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>${modalErro}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%
+                            String modalParamErro = (String) request.getAttribute("modalErro");
+                            if (modalParamErro != null) {
+                                %>
+                                <script>
+
+                                    $(document).ready(function () {
+                                        $('#modalErro').modal('show');
+                                        // setTimeout(function() {
+                                        //  window.location.href = "login"; //funciona como um sendRedirect (redirecionamento)
+                                        // }, 5000);
+                                    });
+                                </script>
+
+                                <%
+                                    }
+                                %>
+                            </div>
+
+
 
 
                             <table class="table">
@@ -196,7 +300,7 @@
                                             </td>
                                             <td id="tb-funcoes">
                                                 <a href="${caminhoContexto}/editar-procedimento?id=${procedimento.id}&nome=${procedimento.nome}&valor=${procedimento.valor}&duracao=${procedimento.duracao}&idUsuario=${procedimento.idUsuario}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarProcedimento) -->
-                                                
+
 
                                             </td>
                                         </tr>
@@ -252,6 +356,8 @@
 
                                 $(document).ready(function () {
                                     $('#modalEditarProcedimento').modal('show');
+
+
                                 });
                             </script>
                             <%
