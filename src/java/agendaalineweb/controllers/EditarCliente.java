@@ -22,29 +22,39 @@ public class EditarCliente extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String id = request.getParameter("id");
         String nome = request.getParameter("nome");
         String email = request.getParameter("email");
         String telefone = request.getParameter("telefone");
         String idNegocio = request.getParameter("idNegocio");
 
-        Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email, Integer.parseInt(idNegocio));
-        request.setAttribute("cliente", cliente);
-        request.setAttribute("modal", "modalEditarCliente");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
 
-        ClienteModel clienteModel = new ClienteModel();
-        ArrayList<Cliente> clientes = clienteModel.selectAll();
-        request.setAttribute("clientes", clientes);
+        if (usuario != null) {
+            Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email, Integer.parseInt(idNegocio));
+            request.setAttribute("cliente", cliente);
+            request.setAttribute("modal", "modalEditarCliente");
 
-        String caminhoContexto = request.getContextPath();
-        request.setAttribute("caminhoContexto", caminhoContexto);
+            ClienteModel clienteModel = new ClienteModel();
+            ArrayList<Cliente> clientes = clienteModel.selectAll(usuario.getIdNegocio());
+            request.setAttribute("clientes", clientes);
 
-        request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+            String caminhoContexto = request.getContextPath();
+            request.setAttribute("caminhoContexto", caminhoContexto);
+
+            request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+        }else{
+            response.sendRedirect("login");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
         String id = request.getParameter("id");
         String nome = request.getParameter("nome");
@@ -61,14 +71,14 @@ public class EditarCliente extends HttpServlet {
             Cliente cliente = new Cliente(Integer.parseInt(id), nome, telefone, email);
 
             clienteModel.updateById(cliente);// CLiente ja editado
-
-            response.sendRedirect(caminhoContexto + "/cadastrar-cliente");// Retorno para a pagina de cadastro(tabela vbisuaçizacao clientes)
+            ArrayList<Cliente> clientes = clienteModel.selectAll(usuario.getIdNegocio());
+             request.setAttribute("clientes", clientes);
+            
         } else {
             mensagem = "Todos os campos devem ser preenchidos.";
         }
         request.setAttribute("mensagemErro", mensagem);
-        ArrayList<Cliente> clientes = clienteModel.selectAll();
-        request.setAttribute("clientes", clientes);
+       
         request.setAttribute("caminhoContexto", caminhoContexto);
 
         request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);

@@ -27,9 +27,9 @@ public class ClienteModel {
         
     }
 
-    public ArrayList<Cliente> selectAll() {//Tipo do retorno do metodo = ArrayList.
+    public ArrayList<Cliente> selectAll(int idNegocio) {//Tipo do retorno do metodo = ArrayList.
         ClienteDao daoCliente = new ClienteDao();
-        ArrayList<Cliente> clientes = daoCliente.selectAll();//chamada do metodo selectAll da DAO.
+        ArrayList<Cliente> clientes = daoCliente.selectAll(idNegocio);//chamada do metodo selectAll da DAO.
 
         return clientes;
     }

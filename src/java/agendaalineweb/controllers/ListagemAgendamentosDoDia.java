@@ -32,21 +32,23 @@ public class ListagemAgendamentosDoDia extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         HttpSession sessao = request.getSession();
         Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
 
         if (usuario != null) {
             AgendamentoModel agendamentoModel = new AgendamentoModel();
-            ArrayList<Agendamento> agendamentos = agendamentoModel.selectByData(Date.valueOf(LocalDate.now()));
+            ArrayList<Agendamento> agendamentos = agendamentoModel.selectByData(Date.valueOf(LocalDate.now()), usuario.getId());
 
             ProcedimentoModel modelProcedimento = new ProcedimentoModel();
             ClienteModel modelCliente = new ClienteModel();
             String caminhoContexto = request.getContextPath();
             request.setAttribute("caminhoContexto", caminhoContexto);
             request.setAttribute("agendamentos", agendamentos);
-            ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll();
+            ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll(usuario.getId());
             request.setAttribute("procedimentos", procedimentos);
-            ArrayList<Cliente> clientes = modelCliente.selectAll();
+            ArrayList<Cliente> clientes = modelCliente.selectAll(usuario.getIdNegocio());
             request.setAttribute("clientes", clientes);
 
             request.getRequestDispatcher("WEB-INF/agendamentosDoDia.jsp").forward(request, response);

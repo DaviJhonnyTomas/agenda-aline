@@ -33,25 +33,30 @@ public class EditarAgendamento extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String idAgendamento = request.getParameter("id");
         String idCliente = request.getParameter("idCliente");
         //String idProcedimento = request.getParameter("idProcedimento");
         String data = request.getParameter("data");
         String hora = request.getParameter("hora");
-
-        Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
+        
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        
+        if(usuario != null){
+            Agendamento agendamento = new Agendamento(Integer.parseInt(idAgendamento), LocalTime.parse(hora), LocalDate.parse(data), Integer.parseInt(idCliente));
         request.setAttribute("agendamento", agendamento);
         request.setAttribute("modal", "modalEditarAgendamento");
 
         AgendamentoModel agendamentoModel = new AgendamentoModel();
-        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
+        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll(usuario.getId());
         request.setAttribute("agendamentos", agendamentos);
 
         String caminhoContexto = request.getContextPath();
         request.setAttribute("caminhoContexto", caminhoContexto);
 
         ClienteModel clienteModel = new ClienteModel();
-        ArrayList<Cliente> clientes = clienteModel.selectAll();
+        ArrayList<Cliente> clientes = clienteModel.selectAll(usuario.getIdNegocio());
         request.setAttribute("clientes", clientes);
         //Procedimento procedimentoSelecionado = procedimentoModel.selectById(Integer.parseInt(idProcedimento));
         // request.setAttribute("procedimentoSelecionado", procedimentoSelecionado);
@@ -65,7 +70,7 @@ public class EditarAgendamento extends HttpServlet {
             request.setAttribute("procedimentosSelecionados", procedimentosSelecionados);
 
             ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-            ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll();
+            ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll(usuario.getId());
 
             for (int i = 0; i < procedimentos2.size(); i++) {
 
@@ -79,7 +84,7 @@ public class EditarAgendamento extends HttpServlet {
             }
             request.setAttribute("procedimentos2", procedimentos2);
 
-            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
             request.setAttribute("procedimentos", procedimentos);
 
         } catch (SQLException ex) {
@@ -87,12 +92,18 @@ public class EditarAgendamento extends HttpServlet {
         }
 
         request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
+        }else{
+            response.sendRedirect("login");
+        }
+        
 
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         HttpSession sessao = request.getSession();
         Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
         String mensagem = null;
@@ -124,7 +135,7 @@ public class EditarAgendamento extends HttpServlet {
                 horaInformada = true;
             }
             ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
 
             ArrayList<Integer> idsProcedimentos = new ArrayList();
             for (int i = 0; i < procedimentos.size(); i++) {
@@ -162,7 +173,7 @@ public class EditarAgendamento extends HttpServlet {
 
         String caminhoContexto = request.getContextPath();
         AgendamentoModel agendamentoModel = new AgendamentoModel();
-        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
+        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll(usuario.getId());
         request.setAttribute("caminhoContexto", caminhoContexto);
         request.setAttribute("agendamentos", agendamentos);
 

@@ -80,14 +80,16 @@ public class ClienteDao {
         return false;
     }
 
-    public ArrayList<Cliente> selectAll() {
-        String sql = "select * from cliente order by nome asc";
-        Connection conexao = null;
+    public ArrayList<Cliente> selectAll(int idNegocio) {
+        String sql = "select * from cliente where idNegocio = ? order by nome asc";
+        Connection conexao = null; 
+        
         PreparedStatement estadoPreparado = null;
         ArrayList<Cliente> clientes = null;
         try {
             conexao = new Conexao().getConnection();
             estadoPreparado = conexao.prepareStatement(sql);
+            estadoPreparado.setInt(1, idNegocio);
             ResultSet retorno = estadoPreparado.executeQuery();
             clientes = new ArrayList();
             while (retorno.next() == true) {

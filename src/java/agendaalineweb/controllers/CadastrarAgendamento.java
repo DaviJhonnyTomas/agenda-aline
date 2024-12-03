@@ -37,28 +37,37 @@ public class CadastrarAgendamento extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AgendamentoModel agendamentoModel = new AgendamentoModel();
-        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
+request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
 
-        ProcedimentoModel modelProcedimento = new ProcedimentoModel();
-        ClienteModel modelCliente = new ClienteModel();
-        String caminhoContexto = request.getContextPath();
-        request.setAttribute("caminhoContexto", caminhoContexto);
-        request.setAttribute("agendamentos", agendamentos);
-        ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll();
-        request.setAttribute("procedimentos", procedimentos);
-        ArrayList<Cliente> clientes = modelCliente.selectAll();
-        request.setAttribute("clientes", clientes);
-        request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
+        if (usuario != null) {
+            AgendamentoModel agendamentoModel = new AgendamentoModel();
+            ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll(usuario.getId());
+            ProcedimentoModel modelProcedimento = new ProcedimentoModel();
+            ClienteModel modelCliente = new ClienteModel();
+            String caminhoContexto = request.getContextPath();
+            request.setAttribute("caminhoContexto", caminhoContexto);
+            request.setAttribute("agendamentos", agendamentos);
+            ArrayList<Procedimento> procedimentos = modelProcedimento.selectAll(usuario.getId());
+            request.setAttribute("procedimentos", procedimentos);
+            ArrayList<Cliente> clientes = modelCliente.selectAll(usuario.getIdNegocio());
+            request.setAttribute("clientes", clientes);
+            request.getRequestDispatcher("WEB-INF/pageAgendamentos.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("login");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         HttpSession sessao = request.getSession();
         Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
         String mensagem = null;
-                    ProcedimentoModel procedimentoModel = new ProcedimentoModel();
+        ProcedimentoModel procedimentoModel = new ProcedimentoModel();
 
         if (usuario == null) {
             mensagem = "Você deve fazer login para realizar esta operação.";
@@ -68,7 +77,7 @@ public class CadastrarAgendamento extends HttpServlet {
             if (!idCliente.isEmpty()) { // se o id do cliente não for vazio (! serve para negar)
                 idClienteInformado = true;
             }
-            ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll();
+            ArrayList<Procedimento> procedimentos2 = procedimentoModel.selectAll(usuario.getId());
 
             ArrayList<Integer> idsProcedimentos = new ArrayList();
             for (int i = 0; i < procedimentos2.size(); i++) {
@@ -105,7 +114,7 @@ public class CadastrarAgendamento extends HttpServlet {
             boolean dataAnterior = true;
 
             LocalDate dataHoje = LocalDate.now();
-            
+
             if (idClienteInformado && idsProcedimentosInformados && horaInformada && dataInformada) {
 
                 if (dataConvertida.isAfter(dataHoje) || dataConvertida.isEqual(dataHoje)) {
@@ -129,12 +138,12 @@ public class CadastrarAgendamento extends HttpServlet {
         }
         request.setAttribute("mensagemErro", mensagem);
         AgendamentoModel agendamentoModel = new AgendamentoModel();
-        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll();
+        ArrayList<Agendamento> agendamentos = agendamentoModel.selectAll(usuario.getId());
         request.setAttribute("agendamentos", agendamentos);
         ClienteModel clienteModel = new ClienteModel();
-        ArrayList<Cliente> clientes = clienteModel.selectAll();
+        ArrayList<Cliente> clientes = clienteModel.selectAll(usuario.getIdNegocio());
         request.setAttribute("clientes", clientes);
-        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
         request.setAttribute("procedimentos", procedimentos);
 
         String caminhoContexto = request.getContextPath();

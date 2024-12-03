@@ -33,9 +33,9 @@ public class ProcedimentoModel {
         daoProcedimento.updateById(procedimentoEditado);//chamada do metodo updateById da DAO.
         }
 
-    public ArrayList<Procedimento> selectAll() {//Tipo do retorno do metodo = ArrayList.
+    public ArrayList<Procedimento> selectAll(int idUsuario) {//Tipo do retorno do metodo = ArrayList.
         ProcedimentoDao daoProcedimento = new ProcedimentoDao();
-        ArrayList<Procedimento> procedimentos = daoProcedimento.selectAll();//chamada do metodo selectAll da DAO.
+        ArrayList<Procedimento> procedimentos = daoProcedimento.selectAll(idUsuario);//chamada do metodo selectAll da DAO.
 
         return procedimentos;
     }

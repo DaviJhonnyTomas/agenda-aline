@@ -36,8 +36,11 @@ public class CadastrarProcedimento extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        Usuario usuario = (Usuario)request.getSession().getAttribute("usuarioLogado");
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
         String caminhoContexto = request.getContextPath();
         request.setAttribute("caminhoContexto", caminhoContexto);
         request.setAttribute("procedimentos", procedimentos);
@@ -56,6 +59,8 @@ public class CadastrarProcedimento extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String nome = request.getParameter("nome");
         String duracao = request.getParameter("duracao");
         String valor = request.getParameter("valor");
@@ -71,13 +76,13 @@ public class CadastrarProcedimento extends HttpServlet {
             Procedimento procedimento = new Procedimento(nome, duracao, Double.parseDouble(valor), usuario.getId());
 
             procedimentoModel.insert(procedimento);
-            response.sendRedirect("cadastrar-procedimento");
+            
         } else {
             mensagem = "Todos os campos devem ser preenchidos.";
         }
         request.setAttribute("mensagemErro", mensagem);
 
-        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
         request.setAttribute("procedimentos", procedimentos);
 
         request.setAttribute("caminhoContexto", request.getContextPath());

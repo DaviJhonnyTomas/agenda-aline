@@ -79,17 +79,18 @@ public class AgendamentoDao {
         }
     }
 
-    public ArrayList<Agendamento> selectByIntervalo(LocalDate dataInicio, LocalDate dataFim) {
+    public ArrayList<Agendamento> selectByIntervalo(LocalDate dataInicio, LocalDate dataFim, int idUsuario) {
         String sql = "SELECT *"
                 + "FROM Agendamento "
-                + "WHERE data BETWEEN ? AND ?";
+                + "WHERE idUsuario = ? AND data BETWEEN ? AND ? ";
 
         ArrayList<Agendamento> agendamentos = new ArrayList<>();
 
         try (Connection conn = new Conexao().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setDate(1, Date.valueOf(dataInicio)); //dataInicio -> LocalDate | Date.valueOf(dataInicio) serve para converter
-            stmt.setDate(2, Date.valueOf(dataFim));
+            stmt.setInt(1, idUsuario);
+            stmt.setDate(2, Date.valueOf(dataInicio)); //dataInicio -> LocalDate | Date.valueOf(dataInicio) serve para converter
+            stmt.setDate(3, Date.valueOf(dataFim));
+            
 
             // Executa a consulta
             ResultSet rs = stmt.executeQuery();
@@ -229,8 +230,8 @@ public class AgendamentoDao {
         }
     }
 
-    public ArrayList<Agendamento> selectAll() {
-        String sql = "select * from agendamento ";
+    public ArrayList<Agendamento> selectAll(int idUsuario) {
+        String sql = "select * from agendamento where idUsuario = ?";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         ArrayList<Agendamento> agendamentos = null;
@@ -238,6 +239,7 @@ public class AgendamentoDao {
             conexao = new Conexao().getConnection();
 
             estadoPreparado = conexao.prepareStatement(sql);
+            estadoPreparado.setInt(1, idUsuario);
             ResultSet retorno = estadoPreparado.executeQuery();
             agendamentos = new ArrayList();
             while (retorno.next() == true) {
@@ -264,8 +266,8 @@ public class AgendamentoDao {
         return agendamentos;
     }
 
-    public ArrayList<Agendamento> selectByData(Date date) {
-        String sql = "select * from agendamento where data = ? ";
+    public ArrayList<Agendamento> selectByData(Date date, int idUsuario) {
+        String sql = "select * from agendamento where data = ? AND idUsuario = ?";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         ArrayList<Agendamento> agendamentos = null;
@@ -273,6 +275,7 @@ public class AgendamentoDao {
             conexao = new Conexao().getConnection();
             estadoPreparado = conexao.prepareStatement(sql);
             estadoPreparado.setDate(1, date);
+            estadoPreparado.setInt(2, idUsuario);
             ResultSet retorno = estadoPreparado.executeQuery();
             agendamentos = new ArrayList();
             while (retorno.next() == true) {
@@ -364,31 +367,50 @@ public class AgendamentoDao {
 
     }
 
-    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes) throws SQLException {
-        String sql = "select * from agendamento";
-        Connection conn = new Conexao().getConnection();
-        PreparedStatement estadoPreparado = conn.prepareStatement(sql);
-        ResultSet rs = estadoPreparado.executeQuery();
-        ArrayList<Agendamento> agendamentos = new ArrayList();
-        while (rs.next()) {
-            int idClienteBanco = rs.getInt("idCliente");
-            for (int i = 0; i < idsClientes.length; i++) {
-                if (idsClientes[i] == idClienteBanco) {
-                    //Agendamento agendamento = new Agendamento(rs.getInt("id"), horaConvertida, dataConvertida, retorno.getInt("idCliente"), retorno.getInt("idUsuario"));
-                    //agendamentos.add(agendamento);
+    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes, int idUsuario) {
+        String sql = "select * from agendamento where idUsuario = ?";
+        Connection conn = null;
+        PreparedStatement estadoPreparado = null;
+        ArrayList<Agendamento> agendamentos = null;
+        try {
+            conn = new Conexao().getConnection();
+            estadoPreparado = conn.prepareStatement(sql);
+            estadoPreparado.setInt(1, idUsuario);
+            ResultSet rs = estadoPreparado.executeQuery();
+            agendamentos = new ArrayList();
+            while (rs.next()) {
+                int idClienteBanco = rs.getInt("idCliente");
+                for (int i = 0; i < idsClientes.length; i++) {
+                    if (idsClientes[i] == idClienteBanco) {
+                        Agendamento agendamento = new Agendamento(rs.getInt("id"), rs.getTime("hora").toLocalTime(), rs.getDate("data").toLocalDate(), rs.getInt("idCliente"), rs.getInt("idUsuario"));
+                        agendamentos.add(agendamento);
+                    }
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(AgendamentoDao.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                estadoPreparado.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AgendamentoDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+
         }
+
         return agendamentos;
     }
 
     //variáveis, métodos, objetos, tipos de dados primitivos
-    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome) throws SQLException {
-        String sql = "SELECT ag.*, cl.nome FROM Agendamento ag INNER JOIN Cliente cl ON ag.idCliente = cl.id WHERE ag.data = ? and cl.nome LIKE ? ";//INNER JOIN -> junção interna de tabelas
+    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome, int idUsuario) throws SQLException {
+        String sql = "SELECT ag.*, cl.nome FROM Agendamento ag INNER JOIN Cliente cl ON ag.idCliente = cl.id WHERE ag.data = ? and cl.nome LIKE ? and ag.idUsuario = ? ";//INNER JOIN -> junção interna de tabelas
         Connection conn = new Conexao().getConnection();
         PreparedStatement estadoPreparado = conn.prepareStatement(sql);
         estadoPreparado.setDate(1, data);
         estadoPreparado.setString(2, nome + "%");
+        estadoPreparado.setInt(3, idUsuario);
         ResultSet rs = estadoPreparado.executeQuery();
 
         ArrayList<Agendamento> agendamentos = new ArrayList<>();
@@ -407,6 +429,7 @@ public class AgendamentoDao {
         try {
             Connection conn = new Conexao().getConnection();
             PreparedStatement estadoPreparado = conn.prepareStatement(sql);
+            estadoPreparado.setInt(1, idCliente);
             ResultSet rs = estadoPreparado.executeQuery();
             if (rs.next()) {
                 return true;

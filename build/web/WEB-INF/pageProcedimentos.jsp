@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,7 +14,7 @@
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Agenda Aline - Clientes</title>
+        <title>Agenda Aline - Serviços</title>
         <script src="https://unpkg.com/@phosphor-icons/web"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
               integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -134,13 +134,13 @@
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Serviços</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/gerenciamento-negocio">Meu negócio</a>
                         </li>
                         <div class="dropdown">
                             <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -164,7 +164,7 @@
         <div id="container-main">
             <div id="container-principal">
                 <div class="mx-auto" id="container-conteudo">
-                    <h2 id="titulo">Cadastro de procedimento</h2>
+                    <h2 id="titulo">Cadastro de serviços</h2>
                     <form action="${caminhoContexto}/cadastrar-procedimento" method="post">
                         <div class="form-group">
 
@@ -232,7 +232,7 @@
                                             <form action="${caminhoContexto}/filtrar-procedimento" method="GET">
 
                                                 <input name="procedimento" id="input-filtrar" class="form-control" type="text"
-                                                       placeholder="Digite o nome do procedimento">
+                                                       placeholder="Digite o nome do serviço">
                                                 <div class="modal-footer d-flex justify-content-center">
 
                                                     <button id="btn-filtrar" type="submit" class="btn">Filtrar pelo

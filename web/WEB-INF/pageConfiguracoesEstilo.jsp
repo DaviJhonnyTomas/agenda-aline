@@ -4,7 +4,7 @@
     Author     : Utilizador
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -42,9 +42,8 @@
             text-align: center;
         }
 
-        .settings-card {
-            width: 60%;
-        }
+        
+        
     </style>
 </head>
 
@@ -62,17 +61,17 @@
             <div class="  " id="navbarNav">
                 <ul class="navbar-nav d-flex justify-content-around">
                     <li class="nav-item li-nav">
-                        <a class="nav-link text-link text-dark" href="page-cliente.html">Cliente</a>
-                    </li>
-                    <li class="nav-item li-nav">
-                        <a class="nav-link text-link text-dark" href="page-procedimento.html">Procedimento</a>
-                    </li>
-                    <li class="nav-item li-nav">
-                        <a class="nav-link text-link text-dark" href="page-agendamento.html">Agendamento</a>
-                    </li>
-                    <li class="nav-item li-nav">
-                        <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
-                    </li>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
+                        </li>
+                        <li class="nav-item li-nav">
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Serviços</a> 
+                        </li>
+                        <li class="nav-item li-nav">
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
+                        </li>
+                        <li class="nav-item li-nav">
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/gerenciamento-negocio">Meu negócio</a>
+                        </li>
                     <div class="dropdown">
                         <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

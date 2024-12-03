@@ -4,7 +4,7 @@
     Author     : Utilizador
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="agendaalineweb.models.ClienteModel"%>
 <%@ page import="agendaalineweb.entities.Cliente"%>
@@ -182,13 +182,13 @@
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Serviços</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/gerenciamento-negocio">Meu negócio</a>
                         </li>
                         <div class="dropdown">
                             <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -319,7 +319,7 @@
                     out.println("<div id='nome-cliente' data-toggle='dropdown'>" + cliente.getNome() + "</div>");
                     out.println("<div class='dropdown-menu' aria-labelledby='btnExpandirAgendamento'>");
 
-                    // Lista procedimentos e detalhes do agendamento
+                    // Lista serviços e detalhes do agendamento
                     double somaProcedimentos = 0;
                     for (Procedimento procedimento : agendamento.getProcedimentos()) {
                         out.println("<span class='dropdown-item'>" + procedimento.getNome() + "</span>");

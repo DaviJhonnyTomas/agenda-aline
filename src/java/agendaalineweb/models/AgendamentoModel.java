@@ -33,21 +33,21 @@ public class AgendamentoModel {
 
     }
     
-    public ArrayList<Agendamento> selectByIntervalo(LocalDate dataInicio, LocalDate dataFim){
+    public ArrayList<Agendamento> selectByIntervalo(LocalDate dataInicio, LocalDate dataFim, int idUsuario){
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        return daoAgendamento.selectByIntervalo(dataInicio, dataFim);
+        return daoAgendamento.selectByIntervalo(dataInicio, dataFim, idUsuario);
     }
 
-    public ArrayList<Agendamento> selectAll() {//Tipo do retorno do metodo = ArrayList.
+    public ArrayList<Agendamento> selectAll(int idUsuario) {//Tipo do retorno do metodo = ArrayList.
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        ArrayList<Agendamento> agendamentos = daoAgendamento.selectAll();//chamada do metodo selectAll da DAO.
+        ArrayList<Agendamento> agendamentos = daoAgendamento.selectAll(idUsuario);//chamada do metodo selectAll da DAO.
 
         return agendamentos;
     }
 
-    public ArrayList<Agendamento> selectByData(Date date) {
+    public ArrayList<Agendamento> selectByData(Date date, int idUsuario) {
         AgendamentoDao daoAgendamento = new AgendamentoDao();
-        ArrayList<Agendamento> agendamentos = daoAgendamento.selectByData(date);
+        ArrayList<Agendamento> agendamentos = daoAgendamento.selectByData(date, idUsuario);
         return agendamentos;
     }
 
@@ -63,15 +63,11 @@ public class AgendamentoModel {
         return agendamentoExiste;
     }
 
-    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes) throws SQLException {
-        AgendamentoDao daoAgendamento = new AgendamentoDao();
-        ArrayList<Agendamento> agendamentos = daoAgendamento.selectAgendamentosByIdsClientes(idsClientes);
-        return agendamentos;
-    }
 
-    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome) throws SQLException {
+
+    public ArrayList<Agendamento> selectByDataAndNome(Date data, String nome, int idUsuario) throws SQLException {
         AgendamentoDao agendamentoDao = new AgendamentoDao();
-        ArrayList<Agendamento> agendamentos = agendamentoDao.selectByDataAndNome(data, nome);
+        ArrayList<Agendamento> agendamentos = agendamentoDao.selectByDataAndNome(data, nome, idUsuario);
        return agendamentos;
     }
 
@@ -79,6 +75,11 @@ public class AgendamentoModel {
         AgendamentoDao agendamentoDao = new AgendamentoDao();
         boolean clienteTemAgendamento = agendamentoDao.clienteTemAgendamento(id);
         return clienteTemAgendamento;
+    }
+
+    public ArrayList<Agendamento> selectAgendamentosByIdsClientes(int[] idsClientes, int idUsuario) {
+        AgendamentoDao agendamentoDao = new AgendamentoDao();
+        return agendamentoDao.selectAgendamentosByIdsClientes(idsClientes, idUsuario);
     }
 
 }

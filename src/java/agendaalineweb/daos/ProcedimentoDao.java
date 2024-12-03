@@ -110,14 +110,15 @@ public class ProcedimentoDao {
 
     }
 
-    public ArrayList<Procedimento> selectAll() {
-        String sql = "select * from procedimento ";
+    public ArrayList<Procedimento> selectAll(int idUsuario) {
+        String sql = "select * from procedimento where idUsuario = ?";
         Connection conexao = null;
         PreparedStatement estadoPreparado = null;
         ArrayList<Procedimento> procedimentos = null;
         try {
             conexao = new Conexao().getConnection();
             estadoPreparado = conexao.prepareStatement(sql);
+            estadoPreparado.setInt(1, idUsuario);
             ResultSet retorno = estadoPreparado.executeQuery();
             procedimentos = new ArrayList();
             while (retorno.next() == true) {

@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import agendaalineweb.entities.Procedimento;
+import agendaalineweb.entities.Usuario;
 
 @WebServlet(name = "ListagemAgendamentoSemanal", urlPatterns = {"/listagem-agendamento-semanal"})
 public class ListagemAgendamentoSemanal extends HttpServlet {
@@ -33,10 +34,15 @@ public class ListagemAgendamentoSemanal extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
         AgendamentoModel agendamentoModel = new AgendamentoModel();
         LocalDate diaAtual = LocalDate.now();
-
+        
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        
+        if(usuario !=  null){
         /* Lógica que usamos sem chatgpt
         if (diaAtual.getDayOfWeek() == DayOfWeek.SUNDAY) {
             //dia atual
@@ -95,7 +101,7 @@ public class ListagemAgendamentoSemanal extends HttpServlet {
         // Formato da data (dd/MM/yyyy)
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        ArrayList<Agendamento> agendamentos = agendamentoModel.selectByIntervalo(inicioDaSemana, fimDaSemana);
+        ArrayList<Agendamento> agendamentos = agendamentoModel.selectByIntervalo(inicioDaSemana, fimDaSemana, usuario.getId());
 
         Agendamento_ProcedimentoModel apModel = new Agendamento_ProcedimentoModel();
 
@@ -117,8 +123,12 @@ public class ListagemAgendamentoSemanal extends HttpServlet {
         String caminhoContexto = request.getContextPath(); 
         request.setAttribute("caminhoContexto", caminhoContexto);
         request.getRequestDispatcher("/WEB-INF/agendamentoSemanal.jsp").forward(request, response);
+    
+        }
+        else{
+          response.sendRedirect("login");
+        }
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

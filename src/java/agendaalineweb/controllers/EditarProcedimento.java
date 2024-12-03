@@ -25,29 +25,39 @@ public class EditarProcedimento extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) //Buscar uma pagina
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String id = request.getParameter("id");
         String nome = request.getParameter("nome");
         String valor = request.getParameter("valor");
         String duracao = request.getParameter("duracao");
         String idUsuario = request.getParameter("idUsuario");
 
-        Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor), Integer.parseInt(idUsuario));
-        request.setAttribute("procedimento", procedimento);
-        request.setAttribute("modal", "modalEditarProcedimento");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
 
-        ProcedimentoModel procedimentoModel = new ProcedimentoModel();
-        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
-        request.setAttribute("procedimentos", procedimentos);
-
-        String caminhoContexto = request.getContextPath();
+        if (usuario != null) {
+            Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor), Integer.parseInt(idUsuario));
+            request.setAttribute("procedimento", procedimento);
+            request.setAttribute("modal", "modalEditarProcedimento");
+            ProcedimentoModel procedimentoModel = new ProcedimentoModel();
+            ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
+            request.setAttribute("procedimentos", procedimentos);
+            String caminhoContexto = request.getContextPath();
         request.setAttribute("caminhoContexto", caminhoContexto);
 
         request.getRequestDispatcher("WEB-INF/pageProcedimentos.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("login");
+        }
+
+        
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)// Pegar algo da pagina e levar para o banco de dados
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String id = request.getParameter("id");
         String nome = request.getParameter("nome");
         String valor = request.getParameter("valor");
@@ -60,8 +70,7 @@ public class EditarProcedimento extends HttpServlet {
 
         } else {
 
-            
-            if (!nome.isEmpty() && !duracao.isEmpty() && !valor.isEmpty()) {
+            if (!id.isEmpty() && !nome.isEmpty() && !duracao.isEmpty() && !valor.isEmpty()) {
 
                 Procedimento procedimento = new Procedimento(Integer.parseInt(id), nome, duracao, Double.parseDouble(valor), usuario.getId());
 
@@ -73,7 +82,7 @@ public class EditarProcedimento extends HttpServlet {
             }
         }
         request.setAttribute("mensagemErro", mensagem);
-        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll();
+        ArrayList<Procedimento> procedimentos = procedimentoModel.selectAll(usuario.getId());
         request.setAttribute("procedimentos", procedimentos);
 
         request.setAttribute("caminhoContexto", request.getContextPath());

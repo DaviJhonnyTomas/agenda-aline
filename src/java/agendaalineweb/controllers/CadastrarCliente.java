@@ -27,26 +27,36 @@ public class CadastrarCliente extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ClienteModel clienteModel = new ClienteModel();
-        ArrayList<Cliente> clientes = clienteModel.selectAll();
-        String caminhoContexto = request.getContextPath();
-        request.setAttribute("caminhoContexto", caminhoContexto);
-        request.setAttribute("clientes", clientes);
-        request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogado");
 
+        if (usuario != null) {
+            ClienteModel clienteModel = new ClienteModel();
+            ArrayList<Cliente> clientes = clienteModel.selectAll(usuario.getIdNegocio());
+            String caminhoContexto = request.getContextPath();
+            request.setAttribute("caminhoContexto", caminhoContexto);
+            request.setAttribute("clientes", clientes);
+            request.getRequestDispatcher("WEB-INF/pageCliente.jsp").forward(request, response);
+        }
+        else{
+            response.sendRedirect("login");
     }
+}
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+/**
+ * Handles the HTTP <code>POST</code> method.
+ *
+ * @param request servlet request
+ * @param response servlet response
+ * @throws ServletException if a servlet-specific error occurs
+ * @throws IOException if an I/O error occurs
+ */
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String nome = request.getParameter("nome");
         String telefone = request.getParameter("telefone");
         String email = request.getParameter("email");
@@ -75,7 +85,7 @@ public class CadastrarCliente extends HttpServlet {
         }
         request.setAttribute("mensagemErro", mensagem);
 
-            request.setAttribute("clientes", clienteModel.selectAll());
+            request.setAttribute("clientes", clienteModel.selectAll(usuario.getIdNegocio()));
 
             String caminhoContexto = request.getContextPath();
             request.setAttribute("caminhoContexto", caminhoContexto);
@@ -90,7 +100,7 @@ public class CadastrarCliente extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

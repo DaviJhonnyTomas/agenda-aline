@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -126,7 +126,7 @@
         %>
 
         <!--caixa de confirmação botão excluir -->
-        <div id="confirmacao-excluir-container"></div>
+        
 
         <div id="confirmacao-excluir-container" hidden>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -138,6 +138,8 @@
 
         <script>
             function dispararAlerta(idCliente) {
+                
+                console.log("tentando excluir o cliente: " + idCliente)
                 // Torna o container de confirmação visível
                 var confirmacaoContainer = document.getElementById("confirmacao-excluir-container");
                 confirmacaoContainer.hidden = false;
@@ -151,7 +153,7 @@
 
                 // Adiciona um event listener ao botão "Sim" passando o idCliente como parâmetro
                 btnConfirmar.addEventListener("click", function () {
-                    confirmarExclusao(idCliente);
+                    confirmarExclusao(idCliente, true);
                 });
 
                 // Toca o som do alerta se disponível
@@ -165,11 +167,9 @@
 
 
 
-            function confirmarExclusao(confirmado) {
-                if (confirmado && confirmado.dataset) {
-                    let idCliente = confirmado.dataset.id;
-
-                    console.log(idCliente);
+            function confirmarExclusao(idCliente, confirmado) {
+                if (confirmado) {
+                    console.log("confirmando exclusão do cliente: "+idCliente);
                     // Cria um formulário dinâmico para exclusão
                     var form = document.createElement("form");
                     form.method = "post";
@@ -190,7 +190,7 @@
                     form.submit();
                 } else {
                     // Remove o alerta de confirmação se o usuário clicar em "Não"
-                    document.getElementById("confirmacao-excluir-container").innerHTML = "";
+                   document.getElementById("confirmacao-excluir-container").hidden = true;
                 }
             }
             function fecharConfirmacaoExclusao() {
@@ -218,13 +218,13 @@
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Serviços</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/gerenciamento-negocio">Meu negócio</a>
                         </li>
                         <div class="dropdown">
                             <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"

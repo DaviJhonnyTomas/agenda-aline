@@ -291,6 +291,8 @@ form {
 /* page-perfil */
 
 .profile-card {
+        height: 87%;
+    margin-bottom: 100px;
     width: 250px;
     height: 100%;
     align-items: center;
@@ -317,7 +319,7 @@ form {
 
 .settings-card{
     width: 55%;
-    height: 100%;
+    margin-bottom: 100px;
     background-color: #edededa6;
     border-radius: 10px;
     box-shadow: 4px 4px 2px 0px rgba(209,209,209,1);

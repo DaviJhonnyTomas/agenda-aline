@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class Conexao {
      public Connection getConnection() throws SQLException{
-        Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/agendaaline?allowPublicKeyRetrieval=true&useSSL=false", "root", "Davi#Tomas9152");
+        Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/agendaaline?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8", "root", "Davi#Tomas9152");
         return conexao;
     }
     

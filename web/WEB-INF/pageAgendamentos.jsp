@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="agendaalineweb.models.ClienteModel"%>
 <%@ page import="agendaalineweb.entities.Cliente"%>
 <%@ page import="agendaalineweb.models.ProcedimentoModel"%>
@@ -115,6 +115,18 @@
                 background-color: whitesmoke;
                 animation: border-blink 1s infinite; /* Animação de borda piscante */
             }
+            
+            #confirmacao-excluir-container {
+                position: fixed;
+                top: 20px; /* Altere o valor conforme necessário para ajustar a distância do topo */
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1050; /* Valor de z-index alto para sobrepor outros elementos */
+                width: auto;
+                max-width: 90%; /* Limite a largura para evitar problemas em telas pequenas */
+
+                border-radius: 10px;
+            }
         </style>
     </head>
 
@@ -150,6 +162,79 @@
         }
                                     
         %>
+        <!--caixa de confirmação botão excluir -->
+
+
+        <div id="confirmacao-excluir-container" hidden>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div>Você realmente deseja excluir?</div>
+                <button type="button" id="btnConfirmar" class="btn btn-danger">Sim</button>
+                <button type="button" onclick="fecharConfirmacaoExclusao()" class="btn btn-secondary">Não</button>
+            </div>
+        </div>
+
+        <script>
+            function dispararAlerta(idAgendamento) {
+
+                console.log("tentando excluir o agendamento " + idAgendamento);
+                // Torna o container de confirmação visível
+                var confirmacaoContainer = document.getElementById("confirmacao-excluir-container");
+                confirmacaoContainer.hidden = false;
+                confirmacaoContainer.style.display = "block";
+
+                // Seleciona o botão de confirmação
+                var btnConfirmar = document.getElementById("btnConfirmar");
+
+                // Remove qualquer event listener existente para evitar duplicações
+                btnConfirmar.removeEventListener("click", confirmarExclusao);
+
+                // Adiciona um event listener ao botão "Sim" passando o idCliente como parâmetro
+                btnConfirmar.addEventListener("click", function () {
+                    confirmarExclusao(idAgendamento, true);
+                });
+
+                // Toca o som do alerta se disponível
+                var alertSound = document.getElementById("alert-sound");
+                try {
+                    alertSound.play();
+                } catch (error) {
+                    console.warn("Som de alerta bloqueado pelo navegador: ", error);
+                }
+            }
+
+
+
+            function confirmarExclusao(idAgendamento, confirmado) {
+                if (confirmado) {
+                    console.log("confirmando exclusão do agendamento " + idAgendamento);
+                    // Cria um formulário dinâmico para exclusão
+                    var form = document.createElement("form");
+                    form.method = "post";
+                    form.action = "excluir-agendamento";
+
+                    // Adiciona um campo hidden com o id do cliente
+                    var inputId = document.createElement("input");
+                    inputId.type = "hidden";
+                    inputId.name = "id";
+                    inputId.value = idAgendamento;
+
+                    console.log(inputId.value);
+
+                    form.appendChild(inputId);
+
+                    // Adiciona o formulário ao body e o submete
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    // Remove o alerta de confirmação se o usuário clicar em "Não"
+                    document.getElementById("confirmacao-excluir-container").hidden = true;
+                }
+            }
+            function fecharConfirmacaoExclusao() {
+                document.getElementById("confirmacao-excluir-container").hidden = true;
+            }
+
+        </script>
 
         <div id="container-menu">
             <nav class="navbar navbar-expand-lg navbar-light  mx-auto">
@@ -168,13 +253,13 @@
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-cliente">Cliente</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Procedimento</a> 
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-procedimento">Serviços</a> 
                         </li>
                         <li class="nav-item li-nav">
                             <a class="nav-link text-link text-dark" href="${caminhoContexto}/cadastrar-agendamento">Agendamento</a>
                         </li>
                         <li class="nav-item li-nav">
-                            <a class="nav-link text-link text-dark" href="page-meuNegocio.html">Meu negócio</a>
+                            <a class="nav-link text-link text-dark" href="${caminhoContexto}/gerenciamento-negocio">Meu negócio</a>
                         </li>
                         <div class="dropdown">
                             <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -219,7 +304,7 @@
                         <div class="input-group mb-3 form-group">
                             <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentos"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Selecione os procedimentos
+                                Selecione os serviços
                             </button>
 
                             <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
@@ -241,13 +326,13 @@
                                 const dropdownButton = document.getElementById("dropdownButtonProcedimentos");
                                 const checkboxes = document.querySelectorAll(".procedimento-checkbox");
 
-                                // Função para atualizar o texto do botão com os procedimentos selecionados
+                                // Função para atualizar o texto do botão com os serviços selecionados
                                 function updateSelectedProcedures() {
                                     const selectedProcedures = Array.from(checkboxes)
                                             .filter(checkbox => checkbox.checked)
                                             .map(checkbox => checkbox.getAttribute("data-name"));
 
-                                    dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
+                                    dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os serviços";
                                 }
 
                                 // Adiciona evento para cada checkbox
@@ -286,7 +371,7 @@
                                 </div>
                                 <div class="container-thitem">
                                     <span class="th-item">
-                                        Procedimento
+                                        Serviços
 
                                     </span>
                                 </div>
@@ -394,10 +479,9 @@
                                             </td>
                                             <td id="tb-funcoes">
                                                 <a href="${caminhoContexto}/editar-agendamento?id=${agendamento.id}&idCliente=${agendamento.idCliente}&data=${agendamento.data}&hora=${agendamento.hora}"><i class="ph ph-pencil"></i></a> <!-- ao clicar neste botão, o id chegará no método doGet (EditarCliente) -->
-                                                <form action="excluir-agendamento" method="post">
-                                                    <input name="id" value="${agendamento.id}" hidden="true">
-                                                    <button id="btnExcluir" type="submit"><i class="ph ph-trash"></i></button>
-                                                </form>
+
+                                                <button id="btnExcluir" onclick="dispararAlerta(${agendamento.id})"><i class="ph ph-trash"></i></button>
+
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -451,7 +535,7 @@
                                                 <div class="input-group mb-3 form-group">
                                                     <button class="btn dropdown-toggle" type="button" id="dropdownButtonProcedimentosEditar"
                                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        Selecione os procedimentos
+                                                        Selecione os serviços
                                                     </button>
 
                                                     <div class="dropdown-menu" id="dropdownMenuProcedimentos" aria-labelledby="dropdownMenuButton">
@@ -485,13 +569,13 @@
                                                             const dropdownButton = document.getElementById("dropdownButtonProcedimentosEditar");
                                                             const checkboxes = document.querySelectorAll(".procedimento-checkbox-editar");
 
-                                                            // Função para atualizar o texto do botão com os procedimentos selecionados
+                                                            // Função para atualizar o texto do botão com os serviços selecionados
                                                             function updateSelectedProceduresEditar() {
                                                                 const selectedProcedures = Array.from(checkboxes)
                                                                         .filter(checkbox => checkbox.checked)
                                                                         .map(checkbox => checkbox.getAttribute("data-name"));
 
-                                                                dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os procedimentos";
+                                                                dropdownButton.textContent = selectedProcedures.length > 0 ? selectedProcedures.join(" | ") : "Selecione os serviços";
                                                             }
 
                                                             // Adiciona evento para cada checkbox
